@@ -489,6 +489,12 @@ body {
     <button class="nav-item" data-panel="portfolio" onclick="showPanel('portfolio',this)">
       <span class="icon">📊</span> Portfolio view
     </button>
+    <a class="nav-item" href="/handover" style="text-decoration:none;">
+      <span class="icon">🔁</span> Handover centre
+    </a>
+    <a class="nav-item" href="/ai" style="text-decoration:none;">
+      <span class="icon">✦</span> AI intelligence
+    </a>
   </nav>
   <div class="sidebar-footer">CBZ Bank · Corp Banking v1.0</div>
 </aside>
@@ -661,7 +667,7 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:5000';
+const API = 'https://cbz-crm.onrender.com';
 let currentRM = null;
 let allClients = [];
 let allTasks = [];

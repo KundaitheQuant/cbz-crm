@@ -217,7 +217,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <button class="nav-link" onclick="switchTab('active', this)">Active handovers</button>
     <button class="nav-link" onclick="switchTab('cover', this)">Cover RM view</button>
   </div>
-  <a class="nav-back" href="index.html">← Back to CRM</a>
+  <div style="display:flex;gap:8px;">
+    <a class="nav-back" href="/ai">✦ AI Intelligence</a>
+    <a class="nav-back" href="/">← Dashboard</a>
+  </div>
 </nav>
 
 <div class="page">
@@ -336,7 +339,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:5000';
+const API = 'https://cbz-crm.onrender.com';
 let allRMs = [];
 let fromClients = [];
 let selectedClientIds = new Set();

@@ -5,7 +5,7 @@ Run: python app.py
 API runs at: http://localhost:5000
 """
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import os
@@ -37,6 +37,18 @@ def rows_to_list(rows):
 
 @app.route("/")
 def index():
+    return send_from_directory('.', 'index.html')
+
+@app.route("/handover")
+def handover():
+    return send_from_directory('.', 'handover.html')
+
+@app.route("/ai")
+def ai():
+    return send_from_directory('.', 'ai.html')
+
+@app.route("/api")
+def api_index():
     return jsonify({
         "system": "CBZ Corporate Banking CRM",
         "version": "1.0",

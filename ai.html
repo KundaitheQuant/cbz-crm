@@ -212,8 +212,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <nav class="topnav">
   <div class="nav-logo">CBZ CRM — AI Intelligence</div>
   <div class="nav-right">
-    <a class="nav-back" href="handover.html">← Handover centre</a>
-    <a class="nav-back" href="index.html">← Dashboard</a>
+    <a class="nav-back" href="/handover">← Handover centre</a>
+    <a class="nav-back" href="/">← Dashboard</a>
   </div>
 </nav>
 
@@ -347,7 +347,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:5000';
+const API = 'https://cbz-crm.onrender.com';
 let allRMs = [];
 let briefClients = [];
 let selectedBriefClients = new Set();
@@ -457,7 +457,7 @@ ${context}`;
   output.classList.add('streaming');
 
   try {
-    const res = await fetch('/api/ai/generate', {
+    const res = await fetch('https://cbz-crm.onrender.com/api/ai/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
@@ -573,7 +573,7 @@ Provide a concise portfolio health analysis covering:
 Be direct and specific. Use the actual client names and numbers. Keep the total response under 350 words.`;
 
   try {
-    const res = await fetch('/api/ai/generate', {
+    const res = await fetch('https://cbz-crm.onrender.com/api/ai/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
@@ -708,7 +708,7 @@ Provide a sharp, actionable analysis:
 Be direct and concise. Reference specific clients and numbers. Maximum 300 words.`;
 
   try {
-    const res = await fetch('/api/ai/generate', {
+    const res = await fetch('https://cbz-crm.onrender.com/api/ai/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
