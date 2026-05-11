@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBZ CRM — Handover Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2333;
+  --border:   #2a3444;
+  --accent:   #c9963a;
+  --accent2:  #e8b455;
+  --text:     #e6edf3;
+  --muted:    #7d8fa8;
+  --danger:   #e05252;
+  --warn:     #e09b35;
+  --good:     #3fb950;
+  --info:     #3d8bcd;
+  --font-head:'DM Serif Display', serif;
+  --font-body:'Figtree', sans-serif;
+  --font-mono:'DM Mono', monospace;
+  --radius:   10px;
+  --radius-lg:16px;
+}
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+
+/* NAV */
+.topnav {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 14px 32px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo { font-family: var(--font-head); font-size: 20px; color: var(--accent2); }
+.nav-links { display: flex; gap: 6px; }
+.nav-link {
+  font-size: 13px; font-weight: 500; padding: 7px 14px;
+  border-radius: var(--radius); border: none; background: none;
+  color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.nav-link:hover { color: var(--text); background: var(--surface2); }
+.nav-link.active { color: var(--accent2); background: rgba(201,150,58,0.1); }
+.nav-back { font-size: 13px; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border); transition: all 0.15s; }
+.nav-back:hover { color: var(--text); border-color: var(--muted); }
+
+.page { max-width: 1100px; margin: 0 auto; padding: 28px 32px; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 5px; width: fit-content; }
+.tab { font-family: var(--font-body); font-size: 13px; font-weight: 500; padding: 8px 20px; border-radius: var(--radius); border: none; background: none; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--surface2); color: var(--text); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; }
+.card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-weight: 600; font-size: 14px; }
+.card-body { padding: 20px; }
+
+/* FORM */
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); display: block; margin-bottom: 6px; }
+.form-input, .form-select { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-body); font-size: 13px; padding: 10px 12px; border-radius: var(--radius); outline: none; transition: border-color 0.15s; }
+.form-input:focus, .form-select:focus { border-color: var(--accent); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* BUTTONS */
+.btn { font-family: var(--font-body); font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: var(--radius); border: none; cursor: pointer; transition: all 0.15s; }
+.btn-primary { background: var(--accent); color: #0d1117; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+.btn-danger { background: rgba(224,82,82,0.15); color: var(--danger); border: 1px solid rgba(224,82,82,0.3); }
+
+/* CLIENT CHECKBOXES */
+.client-check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.client-check {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface2);
+  cursor: pointer; transition: all 0.15s;
+}
+.client-check:hover { border-color: var(--accent); }
+.client-check.selected { border-color: var(--accent); background: rgba(201,150,58,0.08); }
+.client-check input { display: none; }
+.check-box {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 2px solid var(--border); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.15s; font-size: 11px;
+}
+.client-check.selected .check-box { background: var(--accent); border-color: var(--accent); color: #0d1117; }
+.check-label { flex: 1; min-width: 0; }
+.check-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.check-meta { font-size: 11px; color: var(--muted); }
+
+/* BADGE */
+.badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-active   { background: rgba(63,185,80,0.12);  color: var(--good); }
+.badge-completed{ background: rgba(61,139,205,0.15); color: var(--info); }
+.badge-breach   { background: rgba(224,82,82,0.2);   color: var(--danger); }
+.badge-compliant{ background: rgba(63,185,80,0.12);  color: var(--good); }
+.badge-watch    { background: rgba(224,155,53,0.15); color: var(--warn); }
+.badge-npl      { background: rgba(224,82,82,0.25);  color: var(--danger); }
+.badge-high     { background: rgba(224,82,82,0.15);  color: var(--danger); }
+.badge-medium   { background: rgba(224,155,53,0.15); color: var(--warn); }
+.badge-low      { background: rgba(63,185,80,0.12);  color: var(--good); }
+.badge-open     { background: rgba(61,139,205,0.15); color: var(--info); }
+.badge-a { background: rgba(63,185,80,0.15); color: var(--good); }
+.badge-b { background: rgba(61,139,205,0.15); color: var(--info); }
+.badge-c { background: rgba(224,155,53,0.15); color: var(--warn); }
+
+/* HANDOVER CARD */
+.handover-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px 20px;
+  margin-bottom: 12px; position: relative; overflow: hidden;
+}
+.handover-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+.handover-card.completed::before { background: var(--info); }
+.handover-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+.handover-names { font-size: 15px; font-weight: 600; }
+.handover-names span { color: var(--accent2); }
+.handover-dates { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* BRIEF BOX */
+.brief-box {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+  font-family: var(--font-mono); font-size: 12px;
+  line-height: 1.7; color: var(--text);
+  white-space: pre-wrap; max-height: 360px;
+  overflow-y: auto; margin-top: 12px;
+}
+.brief-section { color: var(--accent2); font-weight: 500; }
+.brief-label   { color: var(--muted); }
+
+/* COVER VIEW */
+.cover-header {
+  background: linear-gradient(135deg, rgba(201,150,58,0.1) 0%, transparent 60%);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 20px 24px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.cover-avatar {
+  width: 52px; height: 52px; border-radius: 12px;
+  background: rgba(201,150,58,0.15); border: 2px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 22px; color: var(--accent2);
+  flex-shrink: 0;
+}
+.cover-info h2 { font-family: var(--font-head); font-size: 22px; }
+.cover-info p  { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+.client-brief-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); margin-bottom: 14px; overflow: hidden;
+}
+.client-brief-top {
+  padding: 14px 18px; display: flex; align-items: center;
+  justify-content: space-between; cursor: pointer;
+  transition: background 0.15s; border-bottom: 1px solid transparent;
+}
+.client-brief-top:hover { background: var(--surface2); }
+.client-brief-top.open { border-bottom-color: var(--border); }
+.brief-client-name { font-weight: 600; font-size: 14px; }
+.brief-client-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.client-brief-body { padding: 16px 18px; display: none; }
+.client-brief-body.open { display: block; }
+
+.brief-section-block { margin-bottom: 14px; }
+.brief-section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.brief-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.brief-item:last-child { border-bottom: none; }
+.brief-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+
+/* LIST ROW */
+.list-row { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.list-row:last-child { border-bottom: none; }
+
+/* STEP INDICATOR */
+.steps { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+.step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.step-num { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; transition: all 0.2s; }
+.step.active .step-num { border-color: var(--accent); background: var(--accent); color: #0d1117; }
+.step.done .step-num { border-color: var(--good); background: var(--good); color: #0d1117; }
+.step.active { color: var(--text); }
+.step.done { color: var(--good); }
+.step-line { flex: 1; height: 1px; background: var(--border); margin: 0 8px; min-width: 30px; }
+
+/* EMPTY / LOADING */
+.empty { padding: 36px; text-align: center; color: var(--muted); font-size: 13px; }
+.loading { padding: 36px; text-align: center; color: var(--muted); }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--good); padding: 12px 18px; border-radius: var(--radius); font-size: 13px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">CBZ CRM — Handover Centre</div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="switchTab('create', this)">Create handover</button>
+    <button class="nav-link" onclick="switchTab('active', this)">Active handovers</button>
+    <button class="nav-link" onclick="switchTab('cover', this)">Cover RM view</button>
+  </div>
+  <a class="nav-back" href="index.html">← Back to CRM</a>
+</nav>
+
+<div class="page">
+
+  <!-- ══ TAB 1: CREATE HANDOVER ══ -->
+  <div class="panel active" id="tab-create">
+
+    <div class="steps" id="stepIndicator">
+      <div class="step active" id="step1"><div class="step-num">1</div> Select RM &amp; dates</div>
+      <div class="step-line"></div>
+      <div class="step" id="step2"><div class="step-num">2</div> Choose clients</div>
+      <div class="step-line"></div>
+      <div class="step" id="step3"><div class="step-num">3</div> Review &amp; confirm</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div id="stepPanel1">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Step 1 — RM details &amp; leave dates</span></div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">RM going on leave</label>
+              <select class="form-select" id="fromRM" onchange="loadFromRMClients()">
+                <option value="">Select RM...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cover RM (covering)</label>
+              <select class="form-select" id="toRM">
+                <option value="">Select cover RM...</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Leave start date</label>
+              <input type="date" class="form-input" id="leaveStart">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Return date</label>
+              <input type="date" class="form-input" id="leaveEnd">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="goStep2()">Next — choose clients →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div id="stepPanel2" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Step 2 — Select clients to hand over</span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="selectAll()">Select all</button>
+            <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="selectNone()">Clear</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="clientCheckGrid" class="client-check-grid"></div>
+          <div style="margin-top:16px;display:flex;gap:10px;">
+            <button class="btn btn-ghost" onclick="goStep1()">← Back</button>
+            <button class="btn btn-primary" onclick="goStep3()">Next — review brief →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div id="stepPanel3" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Step 3 — Review handover brief</span>
+          <span style="font-size:12px;color:var(--muted);">Auto-generated from client history</span>
+        </div>
+        <div class="card-body">
+          <div id="step3Summary" style="margin-bottom:16px;"></div>
+          <div id="briefPreview" class="brief-box">
+            <div class="loading"><div class="spinner"></div> Generating brief...</div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;">
+            <button class="btn btn-ghost" onclick="goStep2Back()">← Back</button>
+            <button class="btn btn-primary" id="confirmBtn" onclick="confirmHandover()">✓ Confirm &amp; activate handover</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ TAB 2: ACTIVE HANDOVERS ══ -->
+  <div class="panel" id="tab-active">
+    <div id="activeHandoverList">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 3: COVER RM VIEW ══ -->
+  <div class="panel" id="tab-cover">
+    <div style="margin-bottom:20px;">
+      <div class="form-group" style="max-width:320px;">
+        <label class="form-label">I am covering for...</label>
+        <select class="form-select" id="coverRMSelect" onchange="loadCoverView()">
+          <option value="">Select RM to cover...</option>
+        </select>
+      </div>
+    </div>
+    <div id="coverViewContent">
+      <div class="empty">Select an RM above to see their client briefs</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:5000';
+let allRMs = [];
+let fromClients = [];
+let selectedClientIds = new Set();
+let generatedBrief = '';
+let handoverId = null;
+
+async function init() {
+  allRMs = await fetch(`${API}/api/rms`).then(r=>r.json());
+
+  const opts = allRMs.map(r=>`<option value="${r.id}">${r.code} — ${r.full_name}</option>`).join('');
+  document.getElementById('fromRM').innerHTML = `<option value="">Select RM...</option>` + opts;
+  document.getElementById('toRM').innerHTML   = `<option value="">Select cover RM...</option>` + opts;
+  document.getElementById('coverRMSelect').innerHTML = `<option value="">Select RM to cover...</option>` + opts;
+
+  // default dates
+  const today = new Date();
+  const next  = new Date(today); next.setDate(today.getDate()+7);
+  document.getElementById('leaveStart').value = today.toISOString().split('T')[0];
+  document.getElementById('leaveEnd').value   = next.toISOString().split('T')[0];
+
+  loadActiveHandovers();
+}
+
+// ── STEP NAVIGATION ──
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const s = document.getElementById(`step${i}`);
+    s.classList.remove('active','done');
+    if (i < n) s.classList.add('done');
+    else if (i === n) s.classList.add('active');
+  });
+  [1,2,3].forEach(i => {
+    document.getElementById(`stepPanel${i}`).style.display = i===n ? 'block' : 'none';
+  });
+}
+
+async function loadFromRMClients() {
+  const rmId = document.getElementById('fromRM').value;
+  if (!rmId) return;
+  fromClients = await fetch(`${API}/api/clients?rm_id=${rmId}`).then(r=>r.json());
+}
+
+function goStep2() {
+  const from = document.getElementById('fromRM').value;
+  const to   = document.getElementById('toRM').value;
+  const start= document.getElementById('leaveStart').value;
+  if (!from || !to || !start) { alert('Please fill in all fields'); return; }
+  if (from === to) { alert('Cover RM must be different from the RM going on leave'); return; }
+
+  selectedClientIds = new Set(fromClients.map(c=>c.id));
+  renderClientCheckboxes();
+  setStep(2);
+}
+
+function renderClientCheckboxes() {
+  document.getElementById('clientCheckGrid').innerHTML = fromClients.map(c=>`
+    <div class="client-check ${selectedClientIds.has(c.id)?'selected':''}" onclick="toggleClient(${c.id}, this)">
+      <input type="checkbox" ${selectedClientIds.has(c.id)?'checked':''}>
+      <div class="check-box">${selectedClientIds.has(c.id)?'✓':''}</div>
+      <div class="check-label">
+        <div class="check-name">${c.company_name}</div>
+        <div class="check-meta">${c.sector} · <span class="badge badge-${c.credit_rating.toLowerCase()}">${c.credit_rating}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleClient(id, el) {
+  if (selectedClientIds.has(id)) { selectedClientIds.delete(id); el.classList.remove('selected'); el.querySelector('.check-box').textContent = ''; }
+  else { selectedClientIds.add(id); el.classList.add('selected'); el.querySelector('.check-box').textContent = '✓'; }
+}
+function selectAll()  { fromClients.forEach(c=>selectedClientIds.add(c.id));    renderClientCheckboxes(); }
+function selectNone() { selectedClientIds.clear(); renderClientCheckboxes(); }
+
+async function goStep3() {
+  if (selectedClientIds.size === 0) { alert('Select at least one client to hand over'); return; }
+  setStep(3);
+
+  const fromRM  = allRMs.find(r=>r.id===parseInt(document.getElementById('fromRM').value));
+  const toRM    = allRMs.find(r=>r.id===parseInt(document.getElementById('toRM').value));
+  const clients = fromClients.filter(c=>selectedClientIds.has(c.id));
+
+  document.getElementById('step3Summary').innerHTML = `
+    <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:4px;">
+      <div><span style="color:var(--muted);font-size:12px;">From RM</span><div style="font-weight:600;">${fromRM?.full_name}</div></div>
+      <div><span style="color:var(--muted);font-size:12px;">Cover RM</span><div style="font-weight:600;color:var(--accent2);">${toRM?.full_name}</div></div>
+      <div><span style="color:var(--muted);font-size:12px;">Period</span><div style="font-weight:600;">${document.getElementById('leaveStart').value} → ${document.getElementById('leaveEnd').value}</div></div>
+      <div><span style="color:var(--muted);font-size:12px;">Clients</span><div style="font-weight:600;">${clients.length} accounts</div></div>
+    </div>`;
+
+  // generate preview brief client by client
+  let brief = `HANDOVER BRIEF — Generated ${new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}\n`;
+  brief += `From: ${fromRM?.full_name} (${fromRM?.code})  →  Cover: ${toRM?.full_name} (${toRM?.code})\n`;
+  brief += `Period: ${document.getElementById('leaveStart').value} to ${document.getElementById('leaveEnd').value}\n`;
+  brief += `${'─'.repeat(60)}\n`;
+
+  for (const c of clients) {
+    const d = await fetch(`${API}/api/clients/${c.id}`).then(r=>r.json());
+    brief += `\n▌ ${d.client.company_name.toUpperCase()} (${d.client.client_code})\n`;
+    brief += `  Sector: ${d.client.sector} · Rating: ${d.client.credit_rating} · Health: ${d.client.relationship_health}%\n`;
+    brief += `  Last contact: ${d.client.last_contact||'Not recorded'}\n`;
+
+    if (d.facilities.length) {
+      brief += `\n  FACILITIES\n`;
+      d.facilities.forEach(f=>{
+        const u = f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(0):0;
+        brief += `  • ${f.facility_type} ${f.currency} ${fmtNum(f.limit_amount)} — util ${u}% — ${f.status} — expires ${f.expiry_date||'N/A'}\n`;
+      });
+    }
+
+    const breachedCovs = d.covenants.filter(cv=>cv.status!=='Compliant');
+    if (breachedCovs.length) {
+      brief += `\n  ⚠ COVENANT ISSUES\n`;
+      breachedCovs.forEach(cv=>{
+        brief += `  • ${cv.covenant_type}: ${cv.status} (threshold: ${cv.threshold||'—'}, actual: ${cv.last_value||'—'}) — due ${cv.next_due||'—'}\n`;
+      });
+    }
+
+    const openTasks = d.tasks.filter(t=>t.status!=='Done');
+    if (openTasks.length) {
+      brief += `\n  OPEN TASKS\n`;
+      openTasks.forEach(t=>{
+        brief += `  • [${t.priority}] ${t.title} — due ${t.due_date||'—'} (${t.status})\n`;
+      });
+    }
+
+    const lastInteraction = d.interactions[0];
+    if (lastInteraction) {
+      brief += `\n  LAST INTERACTION (${lastInteraction.interaction_date})\n`;
+      brief += `  ${lastInteraction.interaction_type}: ${lastInteraction.subject}\n`;
+      if (lastInteraction.notes) brief += `  Notes: ${lastInteraction.notes.slice(0,150)}${lastInteraction.notes.length>150?'…':''}\n`;
+      if (lastInteraction.action_items) brief += `  Actions: ${lastInteraction.action_items}\n`;
+    }
+
+    brief += `\n${'─'.repeat(60)}\n`;
+  }
+
+  generatedBrief = brief;
+  document.getElementById('briefPreview').textContent = brief;
+}
+
+function goStep1()    { setStep(1); }
+function goStep2Back(){ setStep(2); }
+
+async function confirmHandover() {
+  document.getElementById('confirmBtn').textContent = 'Creating...';
+  document.getElementById('confirmBtn').disabled = true;
+
+  const res = await fetch(`${API}/api/handovers`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      from_rm_id:  parseInt(document.getElementById('fromRM').value),
+      to_rm_id:    parseInt(document.getElementById('toRM').value),
+      start_date:  document.getElementById('leaveStart').value,
+      end_date:    document.getElementById('leaveEnd').value,
+      client_ids:  [...selectedClientIds],
+    })
+  }).then(r=>r.json());
+
+  handoverId = res.handover_id;
+  showToast('Handover created successfully');
+
+  // reset form
+  setStep(1);
+  document.getElementById('fromRM').value = '';
+  document.getElementById('toRM').value = '';
+  selectedClientIds.clear();
+  document.getElementById('confirmBtn').textContent = '✓ Confirm & activate handover';
+  document.getElementById('confirmBtn').disabled = false;
+
+  // switch to active tab
+  switchTab('active', document.querySelectorAll('.nav-link')[1]);
+  loadActiveHandovers();
+}
+
+// ── ACTIVE HANDOVERS ──
+async function loadActiveHandovers() {
+  const data = await fetch(`${API}/api/handovers`).then(r=>r.json());
+  const el = document.getElementById('activeHandoverList');
+
+  if (!data.length) {
+    el.innerHTML = '<div class="empty">No handovers on record yet</div>';
+    return;
+  }
+
+  el.innerHTML = data.map(h=>`
+    <div class="handover-card ${h.status==='Completed'?'completed':''}">
+      <div class="handover-top">
+        <div>
+          <div class="handover-names">
+            ${h.from_rm_name} <span style="color:var(--muted);font-weight:400;">→</span> <span>${h.to_rm_name}</span>
+          </div>
+          <div class="handover-dates">${h.start_date} → ${h.end_date||'Open-ended'}</div>
+        </div>
+        <span class="badge badge-${h.status.toLowerCase()}">${h.status}</span>
+      </div>
+      ${h.brief_text ? `
+        <button class="btn btn-ghost" style="font-size:12px;padding:5px 12px;margin-bottom:8px;" onclick="toggleBrief('brief-${h.id}', this)">
+          Show handover brief ▾
+        </button>
+        <div id="brief-${h.id}" style="display:none;">
+          <div class="brief-box">${h.brief_text}</div>
+        </div>` : ''}
+    </div>
+  `).join('');
+}
+
+function toggleBrief(id, btn) {
+  const el = document.getElementById(id);
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  btn.textContent  = open ? 'Show handover brief ▾' : 'Hide handover brief ▴';
+}
+
+// ── COVER RM VIEW ──
+async function loadCoverView() {
+  const rmId = document.getElementById('coverRMSelect').value;
+  if (!rmId) return;
+
+  const el = document.getElementById('coverViewContent');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  // find active handovers where this RM is the cover
+  const handovers = await fetch(`${API}/api/handovers?rm_id=${rmId}`).then(r=>r.json());
+  const active = handovers.filter(h=>h.to_rm_id===parseInt(rmId) && h.status==='Active');
+
+  if (!active.length) {
+    el.innerHTML = '<div class="empty">No active handovers assigned to this RM</div>';
+    return;
+  }
+
+  const coverRM = allRMs.find(r=>r.id===parseInt(rmId));
+
+  // get all clients for RMs this cover RM is covering
+  const fromRMIds = [...new Set(active.map(h=>h.from_rm_id))];
+  let allCoveredClients = [];
+  for (const fid of fromRMIds) {
+    const clients = await fetch(`${API}/api/clients?rm_id=${fid}`).then(r=>r.json());
+    allCoveredClients.push(...clients);
+  }
+
+  const fromNames = active.map(h=>h.from_rm_name).join(', ');
+  el.innerHTML = `
+    <div class="cover-header">
+      <div class="cover-avatar">${coverRM?.code}</div>
+      <div class="cover-info">
+        <h2>Covering for ${fromNames}</h2>
+        <p>${allCoveredClients.length} clients under your care · ${active[0].start_date} → ${active[0].end_date||'Open-ended'}</p>
+      </div>
+    </div>
+    <div id="coverClientList"></div>`;
+
+  // load full 360 for each client
+  const clientHTML = [];
+  for (const c of allCoveredClients) {
+    const d = await fetch(`${API}/api/clients/${c.id}`).then(r=>r.json());
+    const breaches = d.covenants.filter(cv=>cv.status!=='Compliant');
+    const openTasks= d.tasks.filter(t=>t.status!=='Done');
+    const lastInt  = d.interactions[0];
+
+    const flags = [];
+    if (breaches.length)   flags.push(`<span class="badge badge-breach">${breaches.length} covenant${breaches.length>1?'s':''}</span>`);
+    if (openTasks.length)  flags.push(`<span class="badge badge-open">${openTasks.length} task${openTasks.length>1?'s':''}</span>`);
+    const nplFacs = d.facilities.filter(f=>f.status==='NPL'||f.status==='Watch');
+    if (nplFacs.length) flags.push(`<span class="badge badge-watch">${nplFacs.length} watch/NPL</span>`);
+
+    clientHTML.push(`
+      <div class="client-brief-card">
+        <div class="client-brief-top" onclick="toggleClientBrief('cb-${c.id}', this)">
+          <div>
+            <div class="brief-client-name">${d.client.company_name}</div>
+            <div class="brief-client-meta">
+              ${d.client.sector} · Rating ${d.client.credit_rating} · Health ${d.client.relationship_health}%
+              &nbsp;${flags.join(' ')}
+            </div>
+          </div>
+          <span style="color:var(--muted);font-size:18px;line-height:1;">▾</span>
+        </div>
+        <div class="client-brief-body" id="cb-${c.id}">
+
+          ${d.facilities.length ? `
+          <div class="brief-section-block">
+            <div class="brief-section-label">Facilities</div>
+            ${d.facilities.map(f=>{
+              const u = f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(0):0;
+              const fc = u>90?'var(--danger)':u>75?'var(--warn)':'var(--good)';
+              return `<div class="brief-item">
+                <div class="brief-dot" style="background:${fc}"></div>
+                <div style="flex:1">${f.facility_type} — ${f.currency} ${fmtNum(f.limit_amount)} limit, ${u}% utilised</div>
+                <span class="badge badge-${f.status.toLowerCase()}">${f.status}</span>
+              </div>`;
+            }).join('')}
+          </div>` : ''}
+
+          ${breaches.length ? `
+          <div class="brief-section-block">
+            <div class="brief-section-label" style="color:var(--danger);">⚠ Covenant issues</div>
+            ${breaches.map(cv=>`
+              <div class="brief-item">
+                <div class="brief-dot" style="background:var(--danger)"></div>
+                <div style="flex:1">${cv.covenant_type}: ${cv.description}</div>
+                <span class="badge badge-breach">${cv.status}</span>
+              </div>`).join('')}
+          </div>` : `
+          <div class="brief-section-block">
+            <div class="brief-section-label">Covenants</div>
+            <div style="font-size:13px;color:var(--good);padding:6px 0;">✓ All covenants compliant</div>
+          </div>`}
+
+          ${openTasks.length ? `
+          <div class="brief-section-block">
+            <div class="brief-section-label">Open tasks</div>
+            ${openTasks.map(t=>`
+              <div class="brief-item">
+                <div class="brief-dot" style="background:${t.priority==='High'?'var(--danger)':t.priority==='Medium'?'var(--warn)':'var(--good)'}"></div>
+                <div style="flex:1">${t.title}</div>
+                <div style="font-size:11px;color:var(--muted);text-align:right;">${t.due_date||'—'}<br><span class="badge badge-${t.priority.toLowerCase()}">${t.priority}</span></div>
+              </div>`).join('')}
+          </div>` : ''}
+
+          ${lastInt ? `
+          <div class="brief-section-block">
+            <div class="brief-section-label">Last interaction</div>
+            <div style="font-size:13px;padding:6px 0;">
+              <span style="color:var(--muted)">${lastInt.interaction_date} · ${lastInt.interaction_type}</span><br>
+              <strong>${lastInt.subject}</strong><br>
+              ${lastInt.notes ? `<span style="color:var(--muted);font-size:12px;">${lastInt.notes.slice(0,200)}${lastInt.notes.length>200?'…':''}</span>` : ''}
+              ${lastInt.action_items ? `<br><span style="color:var(--accent2);font-size:12px;">Actions: ${lastInt.action_items}</span>` : ''}
+            </div>
+          </div>` : ''}
+
+          ${d.contacts.length ? `
+          <div class="brief-section-block">
+            <div class="brief-section-label">Key contacts</div>
+            ${d.contacts.map(ct=>`
+              <div class="brief-item">
+                <div class="brief-dot" style="background:var(--info)"></div>
+                <div style="flex:1"><strong>${ct.full_name}</strong> — ${ct.title}</div>
+                <div style="font-size:11px;color:var(--muted);">${ct.phone||''}</div>
+              </div>`).join('')}
+          </div>` : ''}
+
+        </div>
+      </div>`);
+  }
+
+  document.getElementById('coverClientList').innerHTML = clientHTML.join('');
+}
+
+function toggleClientBrief(id, header) {
+  const body = document.getElementById(id);
+  const open = body.classList.toggle('open');
+  header.classList.toggle('open', open);
+  header.querySelector('span:last-child').textContent = open ? '▴' : '▾';
+}
+
+// ── TAB SWITCHING ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  btn.classList.add('active');
+  if (name==='active') loadActiveHandovers();
+}
+
+// ── HELPERS ──
+function fmtNum(n) {
+  if (!n) return '—';
+  if (n>=1_000_000) return (n/1_000_000).toFixed(1)+'M';
+  if (n>=1_000)     return (n/1_000).toFixed(0)+'K';
+  return n;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>

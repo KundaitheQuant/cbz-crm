@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBZ CRM — AI Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0d1117;
+  --surface:  #161b22;
+  --surface2: #1c2333;
+  --border:   #2a3444;
+  --accent:   #c9963a;
+  --accent2:  #e8b455;
+  --text:     #e6edf3;
+  --muted:    #7d8fa8;
+  --danger:   #e05252;
+  --warn:     #e09b35;
+  --good:     #3fb950;
+  --info:     #3d8bcd;
+  --ai:       #a78bfa;
+  --ai2:      #c4b5fd;
+  --font-head:'DM Serif Display', serif;
+  --font-body:'Figtree', sans-serif;
+  --font-mono:'DM Mono', monospace;
+  --radius:   10px;
+  --radius-lg:16px;
+}
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+
+/* NAV */
+.topnav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.nav-logo { font-family: var(--font-head); font-size: 20px; color: var(--accent2); }
+.nav-right { display: flex; gap: 10px; align-items: center; }
+.nav-back { font-size: 13px; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border); transition: all 0.15s; }
+.nav-back:hover { color: var(--text); border-color: var(--muted); }
+
+.page { max-width: 1080px; margin: 0 auto; padding: 28px 32px; }
+
+/* AI HERO BANNER */
+.ai-banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 20px;
+  position: relative; overflow: hidden;
+}
+.ai-banner::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--ai), var(--accent2), var(--ai));
+}
+.ai-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.ai-banner h1 { font-family: var(--font-head); font-size: 22px; color: var(--text); }
+.ai-banner p  { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 5px; width: fit-content; }
+.tab { font-family: var(--font-body); font-size: 13px; font-weight: 500; padding: 8px 20px; border-radius: var(--radius); border: none; background: none; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--surface2); color: var(--text); }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px; }
+.card-header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.card-title { font-weight: 600; font-size: 14px; }
+.card-body { padding: 20px; }
+
+/* FORM */
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); display: block; margin-bottom: 6px; }
+.form-select, .form-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: var(--font-body); font-size: 13px; padding: 10px 12px; border-radius: var(--radius); outline: none; transition: border-color 0.15s; }
+.form-select:focus, .form-input:focus { border-color: var(--ai); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* BUTTONS */
+.btn { font-family: var(--font-body); font-size: 13px; font-weight: 500; padding: 9px 18px; border-radius: var(--radius); border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 7px; }
+.btn-ai { background: rgba(167,139,250,0.15); color: var(--ai2); border: 1px solid rgba(167,139,250,0.3); }
+.btn-ai:hover:not(:disabled) { background: rgba(167,139,250,0.25); border-color: var(--ai2); }
+.btn-ai:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--accent); color: #0d1117; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); }
+
+/* AI OUTPUT BOX */
+.ai-output {
+  background: var(--surface2);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text);
+  min-height: 120px;
+  position: relative;
+  white-space: pre-wrap;
+  font-family: var(--font-body);
+}
+.ai-output.streaming::after {
+  content: '▋';
+  color: var(--ai2);
+  animation: blink 1s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.ai-output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.ai-label {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ai2); display: flex; align-items: center; gap: 6px;
+}
+.ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ai2); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+/* CLIENT SELECTOR GRID */
+.client-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-bottom: 16px; }
+.client-tile {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 14px;
+  cursor: pointer; transition: all 0.15s;
+}
+.client-tile:hover { border-color: var(--ai); }
+.client-tile.selected { border-color: var(--ai); background: rgba(167,139,250,0.07); }
+.client-tile-name { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.client-tile-meta { font-size: 11px; color: var(--muted); }
+
+/* HEALTH SCORE CARDS */
+.health-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.health-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  position: relative; overflow: hidden;
+}
+.health-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+}
+.health-card.score-high::after  { background: var(--good); }
+.health-card.score-mid::after   { background: var(--warn); }
+.health-card.score-low::after   { background: var(--danger); }
+
+.health-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+.health-name { font-weight: 600; font-size: 14px; }
+.health-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.score-ring-wrap { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
+.score-ring-wrap svg { transform: rotate(-90deg); }
+.score-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.health-factors { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.factor-pill { font-size: 11px; padding: 3px 9px; border-radius: 99px; border: 1px solid; }
+.factor-good { background: rgba(63,185,80,0.1); color: var(--good); border-color: rgba(63,185,80,0.2); }
+.factor-warn { background: rgba(224,155,53,0.1); color: var(--warn); border-color: rgba(224,155,53,0.2); }
+.factor-bad  { background: rgba(224,82,82,0.1);  color: var(--danger); border-color: rgba(224,82,82,0.2); }
+.health-ai-insight { font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 10px; font-style: italic; line-height: 1.6; }
+
+/* SIGNAL CARDS */
+.signal-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start;
+}
+.signal-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.signal-renewal   { background: rgba(61,139,205,0.12); }
+.signal-upsell    { background: rgba(63,185,80,0.1); }
+.signal-risk      { background: rgba(224,82,82,0.1); }
+.signal-cold      { background: rgba(167,139,250,0.1); }
+.signal-body { flex: 1; }
+.signal-title { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+.signal-detail { font-size: 12px; color: var(--muted); }
+.signal-ai { font-size: 12px; color: var(--ai2); margin-top: 6px; font-style: italic; }
+.signal-right { text-align: right; flex-shrink: 0; }
+
+/* BADGE */
+.badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-high   { background: rgba(224,82,82,0.15);  color: var(--danger); }
+.badge-medium { background: rgba(224,155,53,0.15); color: var(--warn); }
+.badge-low    { background: rgba(63,185,80,0.12);  color: var(--good); }
+.badge-ai     { background: rgba(167,139,250,0.15);color: var(--ai2); }
+
+/* EMPTY / LOADING */
+.empty   { padding: 40px; text-align: center; color: var(--muted); font-size: 13px; }
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--ai); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--ai); padding: 12px 18px; border-radius: var(--radius); font-size: 13px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none; max-width: 340px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-logo">CBZ CRM — AI Intelligence</div>
+  <div class="nav-right">
+    <a class="nav-back" href="handover.html">← Handover centre</a>
+    <a class="nav-back" href="index.html">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="ai-banner">
+    <div class="ai-icon">✦</div>
+    <div>
+      <h1>AI Intelligence Layer</h1>
+      <p>Powered by Claude · Auto-generates handover briefs, scores relationship health, and surfaces opportunity signals from your portfolio data</p>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('brief', this)">✦ AI handover brief</button>
+    <button class="tab" onclick="switchTab('health', this)">◎ Relationship health</button>
+    <button class="tab" onclick="switchTab('signals', this)">⚡ Opportunity signals</button>
+  </div>
+
+  <!-- ══ TAB 1: AI HANDOVER BRIEF ══ -->
+  <div class="panel active" id="tab-brief">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Generate AI handover brief</span>
+        <span class="badge badge-ai">✦ Claude-powered</span>
+      </div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">RM going on leave</label>
+            <select class="form-select" id="briefFromRM" onchange="loadBriefClients()">
+              <option value="">Select RM...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cover RM</label>
+            <select class="form-select" id="briefToRM">
+              <option value="">Select cover RM...</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Select clients to include</label>
+          <div class="client-grid" id="briefClientGrid">
+            <div style="color:var(--muted);font-size:13px;grid-column:1/-1;">Select an RM above to see their clients</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-ai" id="generateBtn" onclick="generateAIBrief()" disabled>
+            <span>✦</span> Generate AI brief
+          </button>
+          <button class="btn btn-ghost" id="copyBtn" onclick="copyBrief()" style="display:none;">Copy brief</button>
+          <span id="generateStatus" style="font-size:12px;color:var(--muted);"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="briefOutputCard" style="display:none;">
+      <div class="card-header">
+        <div class="ai-label"><div class="ai-dot"></div> AI-generated handover brief</div>
+        <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="document.getElementById('briefOutputCard').style.display='none'">Dismiss</button>
+      </div>
+      <div class="card-body">
+        <div class="ai-output" id="briefOutput"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 2: RELATIONSHIP HEALTH ══ -->
+  <div class="panel" id="tab-health">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Relationship health scorer</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <select class="form-select" style="width:180px;padding:6px 10px;" id="healthRMSelect" onchange="loadHealthScores()">
+            <option value="">All RMs</option>
+          </select>
+          <button class="btn btn-ai" id="healthAIBtn" onclick="runHealthAI()" disabled>
+            <span>✦</span> AI insights
+          </button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:14px;">
+        <div class="health-grid" id="healthGrid">
+          <div class="empty" style="grid-column:1/-1;">Select an RM or load all clients to score</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="healthInsightCard" style="display:none;">
+      <div class="card-header">
+        <div class="ai-label"><div class="ai-dot"></div> AI portfolio health analysis</div>
+      </div>
+      <div class="card-body">
+        <div class="ai-output" id="healthInsightOutput"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 3: OPPORTUNITY SIGNALS ══ -->
+  <div class="panel" id="tab-signals">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Opportunity &amp; risk signals</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <select class="form-select" style="width:180px;padding:6px 10px;" id="signalRMSelect" onchange="loadSignals()">
+            <option value="">All RMs</option>
+          </select>
+          <button class="btn btn-ai" id="signalAIBtn" onclick="runSignalAI()">
+            <span>✦</span> AI commentary
+          </button>
+        </div>
+      </div>
+      <div class="card-body" id="signalList">
+        <div class="empty">Loading signals...</div>
+      </div>
+    </div>
+
+    <div class="card" id="signalAICard" style="display:none;">
+      <div class="card-header">
+        <div class="ai-label"><div class="ai-dot"></div> AI signal analysis</div>
+      </div>
+      <div class="card-body">
+        <div class="ai-output" id="signalAIOutput"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:5000';
+let allRMs = [];
+let briefClients = [];
+let selectedBriefClients = new Set();
+let allHealthClients = [];
+let allSignals = [];
+
+async function init() {
+  allRMs = await fetch(`${API}/api/rms`).then(r=>r.json());
+  const opts = allRMs.map(r=>`<option value="${r.id}">${r.code} — ${r.full_name}</option>`).join('');
+  document.getElementById('briefFromRM').innerHTML = `<option value="">Select RM...</option>` + opts;
+  document.getElementById('briefToRM').innerHTML   = `<option value="">Select cover RM...</option>` + opts;
+  document.getElementById('healthRMSelect').innerHTML = `<option value="">All RMs</option>` + opts;
+  document.getElementById('signalRMSelect').innerHTML = `<option value="">All RMs</option>` + opts;
+
+  await loadHealthScores();
+  await loadSignals();
+}
+
+// ─────────────────────────────────────────────
+// TAB 1 — AI HANDOVER BRIEF
+// ─────────────────────────────────────────────
+
+async function loadBriefClients() {
+  const rmId = document.getElementById('briefFromRM').value;
+  if (!rmId) { document.getElementById('briefClientGrid').innerHTML = '<div style="color:var(--muted);font-size:13px;grid-column:1/-1;">Select an RM above</div>'; return; }
+
+  briefClients = await fetch(`${API}/api/clients?rm_id=${rmId}`).then(r=>r.json());
+  selectedBriefClients = new Set(briefClients.map(c=>c.id));
+  renderBriefClientGrid();
+  document.getElementById('generateBtn').disabled = false;
+}
+
+function renderBriefClientGrid() {
+  document.getElementById('briefClientGrid').innerHTML = briefClients.map(c=>`
+    <div class="client-tile ${selectedBriefClients.has(c.id)?'selected':''}" onclick="toggleBriefClient(${c.id}, this)">
+      <div class="client-tile-name">${c.company_name}</div>
+      <div class="client-tile-meta">${c.sector} · Rating ${c.credit_rating}</div>
+    </div>
+  `).join('');
+}
+
+function toggleBriefClient(id, el) {
+  if (selectedBriefClients.has(id)) { selectedBriefClients.delete(id); el.classList.remove('selected'); }
+  else { selectedBriefClients.add(id); el.classList.add('selected'); }
+}
+
+async function generateAIBrief() {
+  const fromId = document.getElementById('briefFromRM').value;
+  const toId   = document.getElementById('briefToRM').value;
+  if (!fromId || !toId) { showToast('Please select both RMs'); return; }
+  if (selectedBriefClients.size === 0) { showToast('Select at least one client'); return; }
+
+  const fromRM = allRMs.find(r=>r.id===parseInt(fromId));
+  const toRM   = allRMs.find(r=>r.id===parseInt(toId));
+
+  // gather client data
+  const clientProfiles = [];
+  document.getElementById('generateStatus').textContent = 'Fetching client data...';
+  for (const cid of selectedBriefClients) {
+    const d = await fetch(`${API}/api/clients/${cid}`).then(r=>r.json());
+    clientProfiles.push(d);
+  }
+
+  // build context payload for Claude
+  const context = clientProfiles.map(d => {
+    const c = d.client;
+    const lastInt = d.interactions[0];
+    const openTasks = d.tasks.filter(t=>t.status!=='Done');
+    const breaches  = d.covenants.filter(cv=>cv.status!=='Compliant');
+    const facSummary = d.facilities.map(f=>{
+      const u = f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(0):0;
+      return `${f.facility_type} ${f.currency} ${fmtNum(f.limit_amount)} limit (${u}% utilised, ${f.status}, expires ${f.expiry_date||'N/A'})`;
+    }).join('; ');
+
+    return `CLIENT: ${c.company_name} (${c.client_code})
+Sector: ${c.sector} | Rating: ${c.credit_rating} | Relationship health: ${c.relationship_health}% | Last contact: ${c.last_contact||'Unknown'}
+Facilities: ${facSummary||'None'}
+Covenant issues: ${breaches.length ? breaches.map(b=>`${b.covenant_type} — ${b.status} (threshold ${b.threshold}, actual ${b.last_value||'?'})`).join('; ') : 'None'}
+Open tasks (${openTasks.length}): ${openTasks.map(t=>`[${t.priority}] ${t.title} due ${t.due_date||'?'}`).join('; ')||'None'}
+Last interaction: ${lastInt ? `${lastInt.interaction_date} ${lastInt.interaction_type} — ${lastInt.subject}. Notes: ${lastInt.notes?.slice(0,200)||''}. Actions: ${lastInt.action_items||'None'}` : 'None on record'}`;
+  }).join('\n\n---\n\n');
+
+  const prompt = `You are a senior corporate banking relationship manager at CBZ Bank in Zimbabwe writing a formal handover brief.
+
+${fromRM.full_name} (RM ${fromRM.code}) is going on leave and ${toRM.full_name} (RM ${toRM.code}) will be covering their portfolio.
+
+Below is the current data for each client being handed over. Write a professional, structured handover brief that ${toRM.full_name} can use to manage these clients effectively.
+
+For each client:
+- Start with a 2-sentence executive summary of the relationship status
+- Flag any urgent issues requiring immediate attention (covenant breaches, overdue tasks, expiring facilities)
+- Note the key contact and how to reach them
+- List the 2-3 most important action items to complete during the handover period
+- Give a brief "watch out for" note based on the data
+
+Use a professional banking tone. Be specific — reference actual numbers, dates, and names from the data. Do not make up information not in the data.
+
+CLIENT DATA:
+${context}`;
+
+  // call Claude API
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('generateStatus').textContent = 'Claude is writing your brief...';
+  document.getElementById('briefOutputCard').style.display = 'block';
+  const output = document.getElementById('briefOutput');
+  output.textContent = '';
+  output.classList.add('streaming');
+
+  try {
+    const res = await fetch('/api/ai/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const aiData = await res.json();
+    if (aiData.error) throw new Error(aiData.error);
+    output.textContent = aiData.text;
+    output.classList.remove('streaming');
+    document.getElementById('copyBtn').style.display = 'inline-flex';
+    document.getElementById('generateStatus').textContent = '✓ Brief generated';
+    showToast('AI handover brief ready');
+  } catch(e) {
+    output.classList.remove('streaming');
+    output.textContent = 'Error generating brief. Make sure app.py is running and your API key is configured.\n\nTechnical detail: ' + e.message;
+    document.getElementById('generateStatus').textContent = '';
+  }
+
+  document.getElementById('generateBtn').disabled = false;
+}
+
+function copyBrief() {
+  const text = document.getElementById('briefOutput').textContent;
+  navigator.clipboard.writeText(text).then(()=>showToast('Brief copied to clipboard'));
+}
+
+// ─────────────────────────────────────────────
+// TAB 2 — RELATIONSHIP HEALTH
+// ─────────────────────────────────────────────
+
+async function loadHealthScores() {
+  const rmId = document.getElementById('healthRMSelect').value;
+  const url = rmId ? `${API}/api/clients?rm_id=${rmId}` : `${API}/api/clients`;
+  allHealthClients = await fetch(url).then(r=>r.json());
+  renderHealthGrid();
+  document.getElementById('healthAIBtn').disabled = allHealthClients.length === 0;
+}
+
+function renderHealthGrid() {
+  if (!allHealthClients.length) {
+    document.getElementById('healthGrid').innerHTML = '<div class="empty" style="grid-column:1/-1;">No clients found</div>';
+    return;
+  }
+
+  document.getElementById('healthGrid').innerHTML = allHealthClients.map(c => {
+    const h = c.relationship_health;
+    const scoreClass = h>=80?'score-high':h>=55?'score-mid':'score-low';
+    const scoreColor = h>=80?'var(--good)':h>=55?'var(--warn)':'var(--danger)';
+    const r = 22; const circ = 2*Math.PI*r;
+    const dash = (h/100)*circ;
+
+    // compute factor pills
+    const factors = [];
+    const daysSince = c.last_contact ? Math.floor((new Date()-new Date(c.last_contact))/86400000) : 999;
+    if (daysSince <= 14)       factors.push({label:`Contact ${daysSince}d ago`, cls:'factor-good'});
+    else if (daysSince <= 45)  factors.push({label:`Contact ${daysSince}d ago`, cls:'factor-warn'});
+    else                       factors.push({label:`No contact ${daysSince}d`, cls:'factor-bad'});
+
+    if (c.credit_rating==='A') factors.push({label:'A-rated', cls:'factor-good'});
+    else if (c.credit_rating==='B') factors.push({label:'B-rated', cls:'factor-warn'});
+    else factors.push({label:`${c.credit_rating}-rated`, cls:'factor-bad'});
+
+    const rmName = c.rm_code || '';
+
+    return `
+    <div class="health-card ${scoreClass}">
+      <div class="health-top">
+        <div style="flex:1;min-width:0;padding-right:10px;">
+          <div class="health-name">${c.company_name}</div>
+          <div class="health-meta">${c.sector} · ${rmName}</div>
+        </div>
+        <div class="score-ring-wrap">
+          <svg width="56" height="56" viewBox="0 0 56 56">
+            <circle cx="28" cy="28" r="${r}" fill="none" stroke="var(--border)" stroke-width="4"/>
+            <circle cx="28" cy="28" r="${r}" fill="none" stroke="${scoreColor}" stroke-width="4"
+              stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+          </svg>
+          <div class="score-value" style="color:${scoreColor}">${h}</div>
+        </div>
+      </div>
+      <div class="health-factors">
+        ${factors.map(f=>`<span class="factor-pill ${f.cls}">${f.label}</span>`).join('')}
+      </div>
+      <div class="health-ai-insight" id="insight-${c.id}">
+        Last contact: ${c.last_contact||'Never'} · Click AI Insights for analysis
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function runHealthAI() {
+  document.getElementById('healthAIBtn').disabled = true;
+  document.getElementById('healthInsightCard').style.display = 'block';
+  const output = document.getElementById('healthInsightOutput');
+  output.textContent = '';
+  output.classList.add('streaming');
+
+  const summary = allHealthClients.map(c=>{
+    const days = c.last_contact ? Math.floor((new Date()-new Date(c.last_contact))/86400000) : 999;
+    return `${c.company_name}: health ${c.relationship_health}%, rating ${c.credit_rating}, last contact ${days} days ago, sector ${c.sector}`;
+  }).join('\n');
+
+  const prompt = `You are a senior corporate banking manager at CBZ Bank Zimbabwe reviewing relationship health scores for a portfolio of clients.
+
+Here is the current relationship health data:
+${summary}
+
+Provide a concise portfolio health analysis covering:
+1. Top 2-3 clients at risk of relationship deterioration and why
+2. Which clients need immediate contact (overdue touches)
+3. Any sector-level patterns you notice
+4. 3 specific recommended actions for the RM this week
+
+Be direct and specific. Use the actual client names and numbers. Keep the total response under 350 words.`;
+
+  try {
+    const res = await fetch('/api/ai/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const aiData = await res.json();
+    if (aiData.error) throw new Error(aiData.error);
+    output.textContent = aiData.text;
+    output.classList.remove('streaming');
+    showToast('AI health analysis ready');
+  } catch(e) {
+    output.classList.remove('streaming');
+    output.textContent = 'Error: ' + e.message;
+  }
+  document.getElementById('healthAIBtn').disabled = false;
+}
+
+// ─────────────────────────────────────────────
+// TAB 3 — OPPORTUNITY SIGNALS
+// ─────────────────────────────────────────────
+
+async function loadSignals() {
+  const rmId = document.getElementById('signalRMSelect').value;
+  const url = rmId ? `${API}/api/clients?rm_id=${rmId}` : `${API}/api/clients`;
+  const clients = await fetch(url).then(r=>r.json());
+
+  allSignals = [];
+  const today = new Date();
+
+  for (const c of clients) {
+    const d = await fetch(`${API}/api/clients/${c.id}`).then(r=>r.json());
+
+    // signal: expiring facilities
+    d.facilities.forEach(f => {
+      if (!f.expiry_date) return;
+      const days = Math.floor((new Date(f.expiry_date)-today)/86400000);
+      if (days >= 0 && days <= 90) {
+        allSignals.push({
+          type: 'renewal', priority: days<=30?'High':'Medium',
+          client: c.company_name, rm: c.rm_code||'',
+          title: `${f.facility_type} renewal — ${days} days`,
+          detail: `${f.currency} ${fmtNum(f.limit_amount)} facility expires ${f.expiry_date}. Utilisation at ${f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(0):0}%.`,
+          icon: '⏱', iconClass: 'signal-renewal'
+        });
+      }
+    });
+
+    // signal: high utilisation → upsell limit increase
+    d.facilities.forEach(f => {
+      const u = f.limit_amount>0?(f.utilisation/f.limit_amount*100):0;
+      if (u >= 85 && f.status==='Active') {
+        allSignals.push({
+          type: 'upsell', priority: u>=95?'High':'Medium',
+          client: c.company_name, rm: c.rm_code||'',
+          title: `High utilisation — limit increase opportunity`,
+          detail: `${f.facility_type} at ${u.toFixed(0)}% utilised (${f.currency} ${fmtNum(f.utilisation)} of ${fmtNum(f.limit_amount)}). Client may need headroom.`,
+          icon: '↑', iconClass: 'signal-upsell'
+        });
+      }
+    });
+
+    // signal: covenant breach — risk
+    const breaches = d.covenants.filter(cv=>cv.status==='Breach');
+    if (breaches.length) {
+      allSignals.push({
+        type: 'risk', priority: 'High',
+        client: c.company_name, rm: c.rm_code||'',
+        title: `${breaches.length} covenant breach${breaches.length>1?'es':''} unresolved`,
+        detail: breaches.map(b=>`${b.covenant_type}: threshold ${b.threshold}, actual ${b.last_value||'?'}`).join(' | '),
+        icon: '⚠', iconClass: 'signal-risk'
+      });
+    }
+
+    // signal: cold relationship
+    const daysSince = c.last_contact ? Math.floor((today-new Date(c.last_contact))/86400000) : 999;
+    if (daysSince > 45) {
+      allSignals.push({
+        type: 'cold', priority: daysSince>90?'High':'Medium',
+        client: c.company_name, rm: c.rm_code||'',
+        title: `Relationship going cold — ${daysSince} days since contact`,
+        detail: `Health score ${c.relationship_health}%. Last contact: ${c.last_contact||'Never'}. Risk of relationship deterioration.`,
+        icon: '❄', iconClass: 'signal-cold'
+      });
+    }
+  }
+
+  // sort by priority
+  const order = {High:0, Medium:1, Low:2};
+  allSignals.sort((a,b)=>order[a.priority]-order[b.priority]);
+  renderSignals();
+}
+
+function renderSignals() {
+  if (!allSignals.length) {
+    document.getElementById('signalList').innerHTML = '<div class="empty">No signals detected — portfolio looking clean</div>';
+    return;
+  }
+  document.getElementById('signalList').innerHTML = allSignals.map(s=>`
+    <div class="signal-card">
+      <div class="signal-icon ${s.iconClass}">${s.icon}</div>
+      <div class="signal-body">
+        <div class="signal-title">${s.client} — ${s.title}</div>
+        <div class="signal-detail">${s.detail}</div>
+      </div>
+      <div class="signal-right">
+        <span class="badge badge-${s.priority.toLowerCase()}">${s.priority}</span>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">${s.rm}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function runSignalAI() {
+  if (!allSignals.length) { showToast('No signals to analyse'); return; }
+  document.getElementById('signalAIBtn').disabled = true;
+  document.getElementById('signalAICard').style.display = 'block';
+  const output = document.getElementById('signalAIOutput');
+  output.textContent = ''; output.classList.add('streaming');
+
+  const signalText = allSignals.map(s=>`[${s.priority}] ${s.client}: ${s.title} — ${s.detail}`).join('\n');
+
+  const prompt = `You are a senior corporate banking strategist at CBZ Bank Zimbabwe reviewing portfolio signals.
+
+Here are the current opportunity and risk signals detected across the portfolio:
+${signalText}
+
+Provide a sharp, actionable analysis:
+1. The 3 most critical items requiring action this week — be specific about what action and why
+2. The 2 best revenue opportunities visible in these signals
+3. The biggest portfolio risk and how to mitigate it
+4. One proactive recommendation the team should consider
+
+Be direct and concise. Reference specific clients and numbers. Maximum 300 words.`;
+
+  try {
+    const res = await fetch('/api/ai/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const aiData = await res.json();
+    if (aiData.error) throw new Error(aiData.error);
+    output.textContent = aiData.text;
+    output.classList.remove('streaming');
+    showToast('AI signal analysis ready');
+  } catch(e) {
+    output.classList.remove('streaming');
+    output.textContent = 'Error: ' + e.message;
+  }
+  document.getElementById('signalAIBtn').disabled = false;
+}
+
+// ── HELPERS ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  btn.classList.add('active');
+}
+function fmtNum(n) {
+  if (!n) return '—';
+  if (n>=1_000_000) return (n/1_000_000).toFixed(1)+'M';
+  if (n>=1_000)     return (n/1_000).toFixed(0)+'K';
+  return n;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+init();
+</script>
+</body>
+</html>
