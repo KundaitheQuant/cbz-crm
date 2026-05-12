@@ -4,503 +4,305 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CBZ Corporate Banking CRM</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg:        #0d1117;
-  --surface:   #161b22;
-  --surface2:  #1c2333;
-  --border:    #2a3444;
-  --accent:    #c9963a;
-  --accent2:   #e8b455;
-  --text:      #e6edf3;
-  --muted:     #7d8fa8;
-  --danger:    #e05252;
-  --warn:      #e09b35;
-  --good:      #3fb950;
-  --info:      #3d8bcd;
-  --font-head: 'DM Serif Display', serif;
-  --font-body: 'Figtree', sans-serif;
+  --bg:        #f5f5f0;
+  --surface:   #ffffff;
+  --surface2:  #f8f8f5;
+  --border:    #e8e8e2;
+  --border2:   #d0d0c8;
+  --accent:    #1a3c5e;
+  --accent2:   #2563a8;
+  --gold:      #b8860b;
+  --gold2:     #d4a017;
+  --text:      #1a1a1a;
+  --text2:     #4a4a4a;
+  --muted:     #8a8a80;
+  --danger:    #c0392b;
+  --warn:      #d68910;
+  --good:      #1e8449;
+  --info:      #2471a3;
+  --shadow:    0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --font-head: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
   --font-mono: 'DM Mono', monospace;
   --radius:    10px;
   --radius-lg: 16px;
+  --radius-xl: 24px;
 }
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
 
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 14px;
-  line-height: 1.6;
+/* LOGIN */
+.login-screen {
+  position: fixed; inset: 0; background: var(--accent);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+  background-image: radial-gradient(circle at 20% 80%, rgba(37,99,168,0.4) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(184,134,11,0.2) 0%, transparent 50%);
 }
+.login-box {
+  background: white; border-radius: var(--radius-xl);
+  padding: 48px 44px; width: 400px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  animation: loginFade 0.4s ease;
+}
+@keyframes loginFade { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+.login-logo { text-align: center; margin-bottom: 32px; }
+.login-logo .bank-name { font-family: var(--font-head); font-size: 28px; color: var(--accent); }
+.login-logo .divider { width: 40px; height: 2px; background: var(--gold); margin: 10px auto; border-radius: 2px; }
+.login-logo .dept { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); }
+.login-field { margin-bottom: 16px; }
+.login-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); display: block; margin-bottom: 6px; font-weight: 500; }
+.login-input { width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 11px 14px; font-family: var(--font-body); font-size: 14px; color: var(--text); background: var(--surface2); outline: none; transition: all 0.15s; }
+.login-input:focus { border-color: var(--accent2); background: white; box-shadow: 0 0 0 3px rgba(37,99,168,0.1); }
+.login-btn { width: 100%; background: var(--accent); color: white; border: none; border-radius: var(--radius); padding: 12px; font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: all 0.15s; }
+.login-btn:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,60,94,0.3); }
+.login-error { color: var(--danger); font-size: 12px; text-align: center; margin-top: 10px; display: none; }
+.login-hint { font-size: 11px; color: var(--muted); text-align: center; margin-top: 16px; }
 
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 .sidebar {
-  position: fixed; top: 0; left: 0;
-  width: 220px; height: 100vh;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  z-index: 100;
-  padding: 0;
+  position: fixed; top: 0; left: 0; width: 240px; height: 100vh;
+  background: var(--accent); display: flex; flex-direction: column; z-index: 100;
+  background-image: radial-gradient(circle at 0% 100%, rgba(37,99,168,0.5) 0%, transparent 60%);
 }
+.sidebar-logo { padding: 28px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo .wordmark { font-family: var(--font-head); font-size: 22px; color: white; }
+.sidebar-logo .gold-line { width: 32px; height: 2px; background: var(--gold2); border-radius: 2px; margin: 6px 0; }
+.sidebar-logo .sub { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.14em; text-transform: uppercase; }
+.rm-selector { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.rm-selector label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); display: block; margin-bottom: 7px; }
+.rm-selector select { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: var(--font-body); font-size: 13px; padding: 8px 10px; border-radius: var(--radius); cursor: pointer; outline: none; }
+.rm-selector select option { background: var(--accent); }
+.nav { padding: 14px 12px; flex: 1; }
+.nav-section-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255,255,255,0.35); padding: 0 10px; margin: 14px 0 6px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius); cursor: pointer; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; text-decoration: none; }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+.nav-item.active { background: rgba(255,255,255,0.15); color: white; }
+.nav-item .icon { font-size: 15px; width: 20px; text-align: center; }
+.nav-badge { margin-left: auto; background: var(--danger); color: white; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 99px; }
+.sidebar-user { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 32px; height: 32px; border-radius: 8px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 14px; color: white; flex-shrink: 0; }
+.user-name { font-size: 12px; color: white; font-weight: 500; }
+.user-role { font-size: 10px; color: rgba(255,255,255,0.5); }
+.logout-btn { margin-left: auto; background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 16px; transition: color 0.15s; }
+.logout-btn:hover { color: white; }
 
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo .wordmark {
-  font-family: var(--font-head);
-  font-size: 20px;
-  color: var(--accent2);
-  letter-spacing: 0.02em;
-}
-.sidebar-logo .sub {
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-.rm-selector {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.rm-selector label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  display: block;
-  margin-bottom: 6px;
-}
-.rm-selector select {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 13px;
-  padding: 8px 10px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  outline: none;
-}
-.rm-selector select:focus { border-color: var(--accent); }
-
-.nav { padding: 12px 8px; flex: 1; }
-.nav-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 9px 12px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.15s;
-  margin-bottom: 2px;
-  border: none; background: none; width: 100%; text-align: left;
-}
-.nav-item:hover { background: var(--surface2); color: var(--text); }
-.nav-item.active { background: rgba(201,150,58,0.12); color: var(--accent2); }
-.nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
-.nav-badge {
-  margin-left: auto;
-  background: var(--danger);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 99px;
-  min-width: 18px;
-  text-align: center;
-}
-
-.sidebar-footer {
-  padding: 14px 16px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* ── MAIN ── */
-.main {
-  margin-left: 220px;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-}
-
-.topbar {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 28px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 50;
-}
-.topbar-title {
-  font-family: var(--font-head);
-  font-size: 22px;
-  color: var(--text);
-}
+/* MAIN */
+.main { margin-left: 240px; min-height: 100vh; display: flex; flex-direction: column; }
+.topbar { background: white; border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow); }
+.topbar-title { font-family: var(--font-head); font-size: 24px; color: var(--text); }
 .topbar-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
-
 .topbar-actions { display: flex; gap: 10px; align-items: center; }
-.btn {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 7px 16px;
-  border-radius: var(--radius);
-  border: none; cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-primary { background: var(--accent); color: #0d1117; }
-.btn-primary:hover { background: var(--accent2); }
-.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+.btn { font-family: var(--font-body); font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: var(--radius); border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,60,94,0.25); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1.5px solid var(--border); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.content { padding: 28px 32px; flex: 1; }
 
-.content { padding: 24px 28px; flex: 1; }
-
-/* ── PANELS ── */
+/* PANELS */
 .panel { display: none; }
-.panel.active { display: block; }
+.panel.active { display: block; animation: fadeUp 0.2s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-/* ── KPI TILES ── */
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
-}
-.kpi {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  position: relative;
-  overflow: hidden;
-}
-.kpi::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: var(--accent);
-}
-.kpi.danger::before { background: var(--danger); }
-.kpi.warn::before   { background: var(--warn); }
-.kpi.good::before   { background: var(--good); }
-.kpi.info::before   { background: var(--info); }
-.kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; }
-.kpi-value { font-family: var(--font-head); font-size: 28px; color: var(--text); line-height: 1; }
-.kpi-sub   { font-size: 11px; color: var(--muted); margin-top: 4px; }
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.kpi { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; }
+.kpi:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.kpi-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+.kpi-bar.gold { background: var(--gold); }
+.kpi-bar.good { background: var(--good); }
+.kpi-bar.danger { background: var(--danger); }
+.kpi-bar.warn { background: var(--warn); }
+.kpi-icon { font-size: 22px; margin-bottom: 10px; }
+.kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.kpi-value { font-family: var(--font-head); font-size: 30px; color: var(--text); line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
 
-/* ── GRID LAYOUT ── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.full { margin-bottom: 16px; }
+/* GRID */
+.two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; margin-bottom: 18px; }
+.full { margin-bottom: 18px; }
 
-/* ── CARDS ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-.card-header {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-}
+/* CARDS */
+.card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .card-title { font-weight: 600; font-size: 13px; color: var(--text); }
-.card-count { font-size: 11px; color: var(--muted); }
+.card-subtitle { font-size: 11px; color: var(--muted); margin-top: 1px; }
 .card-body { padding: 0; }
+.chart-wrap { padding: 20px; }
 
-/* ── CLIENT LIST ── */
-.client-row {
-  display: flex; align-items: center;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.1s;
-  gap: 12px;
-}
+/* BAR CHART */
+.bar-chart { display: flex; align-items: flex-end; gap: 10px; height: 100px; }
+.bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.bar-track { flex: 1; display: flex; align-items: flex-end; width: 100%; }
+.bar-fill { width: 100%; border-radius: 4px 4px 0 0; transition: height 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.bar-label { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+/* CLIENT ROWS */
+.client-row { display: flex; align-items: center; padding: 13px 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; gap: 12px; }
 .client-row:last-child { border-bottom: none; }
 .client-row:hover { background: var(--surface2); }
-.client-row.selected { background: rgba(201,150,58,0.07); border-left: 3px solid var(--accent); }
-
-.client-avatar {
-  width: 36px; height: 36px;
-  border-radius: 8px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-head);
-  font-size: 14px;
-  color: var(--accent2);
-  flex-shrink: 0;
-}
+.client-avatar { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 15px; color: white; flex-shrink: 0; }
 .client-info { flex: 1; min-width: 0; }
 .client-name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.client-meta { font-size: 11px; color: var(--muted); }
+.client-meta { font-size: 11px; color: var(--muted); margin-top: 1px; }
 .client-right { text-align: right; flex-shrink: 0; }
 
-/* ── BADGES ── */
-.badge {
-  display: inline-block;
-  font-size: 10px; font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 99px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.badge-a     { background: rgba(63,185,80,0.15);  color: var(--good); }
-.badge-b     { background: rgba(61,139,205,0.15); color: var(--info); }
-.badge-c     { background: rgba(224,155,53,0.15); color: var(--warn); }
-.badge-d     { background: rgba(224,82,82,0.15);  color: var(--danger); }
-.badge-npl   { background: rgba(224,82,82,0.25);  color: var(--danger); }
-.badge-active  { background: rgba(63,185,80,0.12);  color: var(--good); }
-.badge-watch   { background: rgba(224,155,53,0.15); color: var(--warn); }
-.badge-expired { background: rgba(224,82,82,0.15);  color: var(--danger); }
-.badge-breach  { background: rgba(224,82,82,0.2);   color: var(--danger); }
-.badge-compliant { background: rgba(63,185,80,0.12); color: var(--good); }
-.badge-pending   { background: rgba(61,139,205,0.15);color: var(--info); }
-.badge-high    { background: rgba(224,82,82,0.15);  color: var(--danger); }
-.badge-medium  { background: rgba(224,155,53,0.15); color: var(--warn); }
-.badge-low     { background: rgba(63,185,80,0.12);  color: var(--good); }
-.badge-open    { background: rgba(61,139,205,0.15); color: var(--info); }
-.badge-done    { background: rgba(63,185,80,0.12);  color: var(--good); }
-.badge-overdue { background: rgba(224,82,82,0.2);   color: var(--danger); }
-.badge-in-progress { background: rgba(201,150,58,0.15); color: var(--accent2); }
-
-/* ── INTERACTION / TASK ROWS ── */
-.list-row {
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: flex-start; gap: 12px;
-}
-.list-row:last-child { border-bottom: none; }
-.list-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  flex-shrink: 0; margin-top: 5px;
-}
-.dot-call     { background: var(--info); }
-.dot-meeting  { background: var(--accent); }
-.dot-email    { background: var(--muted); }
-.dot-visit    { background: var(--good); }
-.list-main { flex: 1; min-width: 0; }
-.list-subject { font-weight: 500; font-size: 13px; }
-.list-sub     { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.list-right   { text-align: right; font-size: 11px; color: var(--muted); flex-shrink: 0; }
-
-/* ── UTILISATION BAR ── */
-.util-bar-wrap { background: var(--border); border-radius: 4px; height: 6px; width: 100%; overflow: hidden; }
+/* UTIL BAR */
+.util-bar-wrap { background: var(--border); border-radius: 4px; height: 5px; width: 100%; overflow: hidden; }
 .util-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
 
-/* ── ALERT ROW ── */
-.alert-row {
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: flex-start; gap: 12px;
-  cursor: pointer; transition: background 0.1s;
-}
+/* BADGES */
+.badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge-a { background: #d5f0dc; color: #1e8449; }
+.badge-b { background: #dbeafe; color: #2471a3; }
+.badge-c { background: #fef3cd; color: #d68910; }
+.badge-d { background: #fde8e8; color: #c0392b; }
+.badge-npl { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6c6; }
+.badge-active { background: #d5f0dc; color: #1e8449; }
+.badge-watch { background: #fef3cd; color: #d68910; }
+.badge-expired { background: #fde8e8; color: #c0392b; }
+.badge-breach { background: #fde8e8; color: #c0392b; }
+.badge-compliant { background: #d5f0dc; color: #1e8449; }
+.badge-pending { background: #dbeafe; color: #2471a3; }
+.badge-high { background: #fde8e8; color: #c0392b; }
+.badge-medium { background: #fef3cd; color: #d68910; }
+.badge-low { background: #d5f0dc; color: #1e8449; }
+.badge-open { background: #dbeafe; color: #2471a3; }
+.badge-done { background: #d5f0dc; color: #1e8449; }
+.badge-overdue { background: #fde8e8; color: #c0392b; }
+.badge-in-progress { background: #fef3cd; color: #d68910; }
+.badge-usd { background: #d5f0dc; color: #1e8449; }
+.badge-zig { background: #fef3cd; color: #d68910; }
+.badge-zar { background: #dbeafe; color: #2471a3; }
+
+/* LIST ROWS */
+.list-row { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; }
+.list-row:last-child { border-bottom: none; }
+.list-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.list-main { flex: 1; min-width: 0; }
+.list-subject { font-weight: 500; font-size: 13px; }
+.list-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.list-right { text-align: right; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+
+/* ALERTS */
+.alert-row { padding: 13px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: background 0.1s; }
 .alert-row:last-child { border-bottom: none; }
 .alert-row:hover { background: var(--surface2); }
-.alert-row.read { opacity: 0.5; }
-.alert-icon {
-  width: 28px; height: 28px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; flex-shrink: 0;
-}
-.alert-high   { background: rgba(224,82,82,0.15); }
-.alert-medium { background: rgba(224,155,53,0.15); }
-.alert-low    { background: rgba(63,185,80,0.12); }
+.alert-row.read { opacity: 0.45; }
+.alert-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.alert-high { background: #fde8e8; }
+.alert-medium { background: #fef3cd; }
+.alert-low { background: #d5f0dc; }
 
-/* ── CLIENT 360 MODAL ── */
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  align-items: flex-start;
-  justify-content: flex-end;
-}
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 200; align-items: flex-start; justify-content: flex-end; backdrop-filter: blur(2px); }
 .modal-overlay.open { display: flex; }
-.modal-drawer {
-  width: 560px;
-  height: 100vh;
-  background: var(--surface);
-  border-left: 1px solid var(--border);
-  overflow-y: auto;
-  animation: slideIn 0.2s ease;
-}
-@keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-.modal-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: flex-start; justify-content: space-between;
-  position: sticky; top: 0; background: var(--surface); z-index: 10;
-}
-.modal-title { font-family: var(--font-head); font-size: 20px; }
-.modal-close {
-  background: none; border: none; color: var(--muted);
-  font-size: 20px; cursor: pointer; padding: 4px;
-  line-height: 1; transition: color 0.15s;
-}
-.modal-close:hover { color: var(--text); }
-.modal-body { padding: 20px 24px; }
-
-.section-title {
-  font-size: 10px; text-transform: uppercase;
-  letter-spacing: 0.12em; color: var(--muted);
-  margin: 20px 0 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
-}
+.modal-drawer { width: 580px; height: 100vh; background: white; border-left: 1px solid var(--border); overflow-y: auto; animation: slideIn 0.22s ease; box-shadow: -8px 0 32px rgba(0,0,0,0.12); }
+@keyframes slideIn { from { transform:translateX(40px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+.modal-header { padding: 22px 26px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; position: sticky; top: 0; background: white; z-index: 10; }
+.modal-title { font-family: var(--font-head); font-size: 22px; color: var(--text); }
+.modal-close { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px 10px; border-radius: var(--radius); line-height: 1; transition: all 0.15s; }
+.modal-close:hover { background: var(--border); color: var(--text); }
+.modal-body { padding: 22px 26px; }
+.section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.13em; color: var(--muted); margin: 22px 0 10px; padding-bottom: 7px; border-bottom: 1px solid var(--border); font-weight: 600; }
 .section-title:first-child { margin-top: 0; }
-
-.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.detail-item { }
-.detail-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
 .detail-value { font-size: 13px; font-weight: 500; margin-top: 2px; }
-
-.facility-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  margin-bottom: 8px;
-}
-.facility-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.facility-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+.facility-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .facility-type { font-weight: 600; font-size: 13px; }
 .facility-amount { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
-.facility-util-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-
-.covenant-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-}
+.covenant-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); }
 .covenant-row:last-child { border-bottom: none; }
 
-/* ── LOG INTERACTION FORM ── */
-.form-group { margin-bottom: 14px; }
-.form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); display: block; margin-bottom: 5px; }
-.form-input, .form-select, .form-textarea {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 13px;
-  padding: 9px 12px;
-  border-radius: var(--radius);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
+/* FORM */
+.form-group { margin-bottom: 15px; }
+.form-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); display: block; margin-bottom: 5px; font-weight: 500; }
+.form-input, .form-select, .form-textarea { width: 100%; background: var(--surface2); border: 1.5px solid var(--border); color: var(--text); font-family: var(--font-body); font-size: 13px; padding: 9px 12px; border-radius: var(--radius); outline: none; transition: all 0.15s; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent2); background: white; box-shadow: 0 0 0 3px rgba(37,99,168,0.08); }
 .form-textarea { resize: vertical; min-height: 80px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-/* ── HEALTH SCORE ── */
-.health-ring {
-  width: 52px; height: 52px; position: relative; flex-shrink: 0;
-}
-.health-ring svg { transform: rotate(-90deg); }
-.health-ring .value {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-  transform: rotate(0deg);
-}
+/* PORTFOLIO */
+.portfolio-row { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.portfolio-row:last-child { border-bottom: none; }
+.portfolio-row:hover { background: var(--surface2); }
+.rm-badge { width: 40px; height: 40px; border-radius: 10px; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 14px; flex-shrink: 0; }
 
-/* ── EMPTY STATE ── */
-.empty { padding: 32px; text-align: center; color: var(--muted); font-size: 13px; }
+.h-good { color: var(--good); font-weight: 600; }
+.h-ok   { color: var(--warn); font-weight: 600; }
+.h-bad  { color: var(--danger); font-weight: 600; }
 
-/* ── LOADING ── */
-.loading { padding: 32px; text-align: center; color: var(--muted); font-size: 13px; }
-.spinner {
-  display: inline-block; width: 20px; height: 20px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  margin-bottom: 8px;
-}
+.empty { padding: 36px; text-align: center; color: var(--muted); font-size: 13px; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed; bottom: 24px; right: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--good);
-  padding: 12px 18px;
-  border-radius: var(--radius);
-  font-size: 13px;
-  z-index: 999;
-  opacity: 0; transform: translateY(10px);
-  transition: all 0.2s;
-  pointer-events: none;
-}
+.loading { padding: 32px; text-align: center; color: var(--muted); }
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: white; padding: 12px 20px; border-radius: var(--radius); font-size: 13px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.2s; pointer-events: none; box-shadow: var(--shadow-lg); }
 .toast.show { opacity: 1; transform: translateY(0); }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-/* ── HEALTH COLOR ── */
-.h-good  { color: var(--good); }
-.h-ok    { color: var(--warn); }
-.h-bad   { color: var(--danger); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="bank-name">CBZ Bank</div>
+      <div class="divider"></div>
+      <div class="dept">Corporate Banking CRM</div>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Username</label>
+      <input type="text" class="login-input" id="loginUser" placeholder="Enter username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Password</label>
+      <input type="password" class="login-input" id="loginPass" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Sign in to CRM</button>
+    <div class="login-error" id="loginError">Invalid username or password</div>
+    <div class="login-hint">CBZ Corporate Banking · Authorised users only<br><br>Demo: admin / cbz2026 &nbsp;|&nbsp; RMs: ca,cc,ce,ck / rm1234</div>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar" style="display:none;">
   <div class="sidebar-logo">
     <div class="wordmark">CBZ CRM</div>
+    <div class="gold-line"></div>
     <div class="sub">Corporate Banking</div>
   </div>
   <div class="rm-selector">
-    <label>Logged in as</label>
-    <select id="rmSelect" onchange="switchRM()">
-      <option value="">Loading...</option>
-    </select>
+    <label>Active portfolio</label>
+    <select id="rmSelect" onchange="switchRM()"></select>
   </div>
   <nav class="nav">
-    <button class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard',this)">
-      <span class="icon">⬛</span> Dashboard
-    </button>
-    <button class="nav-item" data-panel="clients" onclick="showPanel('clients',this)">
-      <span class="icon">🏢</span> Clients
-    </button>
-    <button class="nav-item" data-panel="tasks" onclick="showPanel('tasks',this)">
-      <span class="icon">✓</span> Tasks
-      <span class="nav-badge" id="taskBadge" style="display:none">0</span>
-    </button>
-    <button class="nav-item" data-panel="alerts" onclick="showPanel('alerts',this)">
-      <span class="icon">🔔</span> Alerts
-      <span class="nav-badge" id="alertBadge" style="display:none">0</span>
-    </button>
-    <button class="nav-item" data-panel="portfolio" onclick="showPanel('portfolio',this)">
-      <span class="icon">📊</span> Portfolio view
-    </button>
-    <a class="nav-item" href="/handover" style="text-decoration:none;">
-      <span class="icon">🔁</span> Handover centre
-    </a>
-    <a class="nav-item" href="/ai" style="text-decoration:none;">
-      <span class="icon">✦</span> AI intelligence
-    </a>
+    <div class="nav-section-label">Main</div>
+    <button class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard',this)"><span class="icon">▦</span> Dashboard</button>
+    <button class="nav-item" data-panel="clients" onclick="showPanel('clients',this)"><span class="icon">🏢</span> Clients</button>
+    <button class="nav-item" data-panel="tasks" onclick="showPanel('tasks',this)"><span class="icon">✓</span> Tasks<span class="nav-badge" id="taskBadge" style="display:none">0</span></button>
+    <button class="nav-item" data-panel="alerts" onclick="showPanel('alerts',this)"><span class="icon">🔔</span> Alerts<span class="nav-badge" id="alertBadge" style="display:none">0</span></button>
+    <div class="nav-section-label">Portfolio</div>
+    <button class="nav-item" data-panel="portfolio" onclick="showPanel('portfolio',this)"><span class="icon">📊</span> Portfolio view</button>
+    <a class="nav-item" href="/handover"><span class="icon">🔁</span> Handover centre</a>
+    <a class="nav-item" href="/ai"><span class="icon">✦</span> AI Intelligence</a>
   </nav>
-  <div class="sidebar-footer">CBZ Bank · Corp Banking v1.0</div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="sidebarAvatar">—</div>
+    <div><div class="user-name" id="sidebarName">—</div><div class="user-role">Relationship Manager</div></div>
+    <button class="logout-btn" onclick="doLogout()" title="Sign out">⏻</button>
+  </div>
 </aside>
 
 <!-- MAIN -->
-<main class="main">
+<main class="main" id="mainContent" style="display:none;">
   <div class="topbar">
     <div>
       <div class="topbar-title" id="topbarTitle">Dashboard</div>
@@ -511,653 +313,370 @@ body {
       <button class="btn btn-primary" onclick="openLogInteraction()">+ Log interaction</button>
     </div>
   </div>
-
   <div class="content">
 
-    <!-- DASHBOARD PANEL -->
     <div class="panel active" id="panel-dashboard">
-      <div class="kpi-grid" id="kpiGrid">
-        <div class="loading"><div class="spinner"></div><br>Loading dashboard...</div>
-      </div>
+      <div class="kpi-grid" id="kpiGrid"><div class="loading"><div class="spinner"></div></div></div>
       <div class="two-col">
         <div class="card">
           <div class="card-header">
-            <span class="card-title">My clients</span>
-            <span class="card-count" id="clientCount">—</span>
+            <div><div class="card-title">Client portfolio</div><div class="card-subtitle" id="clientCount">—</div></div>
+            <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="showPanel('clients',document.querySelector('[data-panel=clients]'))">View all</button>
           </div>
           <div class="card-body" id="dashClientList"></div>
         </div>
         <div>
-          <div class="card" style="margin-bottom:16px">
-            <div class="card-header"><span class="card-title">Open tasks</span></div>
-            <div class="card-body" id="dashTaskList"></div>
+          <div class="card" style="margin-bottom:18px;">
+            <div class="card-header"><div class="card-title">Utilisation by RM</div></div>
+            <div class="chart-wrap" id="utilChart"></div>
           </div>
           <div class="card">
-            <div class="card-header"><span class="card-title">Covenant issues</span></div>
+            <div class="card-header"><div class="card-title">Covenant issues</div></div>
             <div class="card-body" id="dashCovenantList"></div>
           </div>
         </div>
       </div>
-      <div class="full">
-        <div class="card">
-          <div class="card-header"><span class="card-title">Recent interactions</span></div>
-          <div class="card-body" id="dashInteractions"></div>
-        </div>
+      <div class="two-col">
+        <div class="card"><div class="card-header"><div class="card-title">Open tasks</div></div><div class="card-body" id="dashTaskList"></div></div>
+        <div class="card"><div class="card-header"><div class="card-title">Recent interactions</div></div><div class="card-body" id="dashInteractions"></div></div>
       </div>
     </div>
 
-    <!-- CLIENTS PANEL -->
     <div class="panel" id="panel-clients">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Client portfolio</span>
+          <div class="card-title">Client portfolio</div>
           <div style="display:flex;gap:8px;">
-            <select class="form-select" style="width:140px;padding:5px 8px;" id="filterSector" onchange="renderClients()">
-              <option value="">All sectors</option>
-            </select>
-            <select class="form-select" style="width:120px;padding:5px 8px;" id="filterRating" onchange="renderClients()">
-              <option value="">All ratings</option>
-              <option>A</option><option>B</option><option>C</option><option>D</option><option>NPL</option>
-            </select>
+            <select class="form-select" style="width:150px;padding:6px 10px;" id="filterSector" onchange="renderClients()"><option value="">All sectors</option></select>
+            <select class="form-select" style="width:130px;padding:6px 10px;" id="filterRating" onchange="renderClients()"><option value="">All ratings</option><option>A</option><option>B</option><option>C</option><option>D</option><option>NPL</option></select>
           </div>
         </div>
         <div class="card-body" id="clientListFull"></div>
       </div>
     </div>
 
-    <!-- TASKS PANEL -->
     <div class="panel" id="panel-tasks">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">My tasks</span>
-          <select class="form-select" style="width:130px;padding:5px 8px;" id="filterTaskStatus" onchange="renderTasksPanel()">
-            <option value="">All statuses</option>
-            <option>Open</option><option>In Progress</option><option>Overdue</option><option>Done</option>
-          </select>
+          <div class="card-title">My tasks</div>
+          <select class="form-select" style="width:140px;padding:6px 10px;" id="filterTaskStatus" onchange="renderTasksPanel()"><option value="">All statuses</option><option>Open</option><option>In Progress</option><option>Overdue</option><option>Done</option></select>
         </div>
         <div class="card-body" id="taskListFull"></div>
       </div>
     </div>
 
-    <!-- ALERTS PANEL -->
     <div class="panel" id="panel-alerts">
       <div class="card">
         <div class="card-header">
-          <span class="card-title">Alerts &amp; notifications</span>
-          <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;" onclick="markAllRead()">Mark all read</button>
+          <div class="card-title">Alerts &amp; notifications</div>
+          <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="markAllRead()">Mark all read</button>
         </div>
         <div class="card-body" id="alertListFull"></div>
       </div>
     </div>
 
-    <!-- PORTFOLIO VIEW PANEL -->
     <div class="panel" id="panel-portfolio">
       <div class="kpi-grid" id="portfolioKpis"></div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">All RMs — portfolio breakdown</span></div>
-        <div class="card-body" id="portfolioTable"></div>
-      </div>
+      <div class="card"><div class="card-header"><div class="card-title">RM portfolio breakdown</div></div><div class="card-body" id="portfolioTable"></div></div>
     </div>
 
-  </div><!-- /content -->
+  </div>
 </main>
 
 <!-- CLIENT 360 DRAWER -->
 <div class="modal-overlay" id="clientModal" onclick="closeClientModal(event)">
-  <div class="modal-drawer" id="clientDrawer">
+  <div class="modal-drawer">
     <div class="modal-header">
-      <div>
-        <div class="modal-title" id="modalClientName">—</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px;" id="modalClientMeta">—</div>
-      </div>
+      <div><div class="modal-title" id="modalClientName">—</div><div style="font-size:12px;color:var(--muted);margin-top:3px;" id="modalClientMeta">—</div></div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body" id="modalBody">
-      <div class="loading"><div class="spinner"></div><br>Loading client profile...</div>
-    </div>
+    <div class="modal-body" id="modalBody"><div class="loading"><div class="spinner"></div></div></div>
   </div>
 </div>
 
-<!-- LOG INTERACTION MODAL -->
+<!-- LOG INTERACTION -->
 <div class="modal-overlay" id="logModal" onclick="closeLogModal(event)">
-  <div class="modal-drawer" style="width:480px;">
-    <div class="modal-header">
-      <div class="modal-title">Log interaction</div>
-      <button class="modal-close" onclick="closeLog()">✕</button>
-    </div>
+  <div class="modal-drawer" style="width:460px;">
+    <div class="modal-header"><div class="modal-title">Log interaction</div><button class="modal-close" onclick="closeLog()">✕</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Client</label>
-        <select class="form-select" id="logClient"></select>
-      </div>
+      <div class="form-group"><label class="form-label">Client</label><select class="form-select" id="logClient"></select></div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Type</label>
-          <select class="form-select" id="logType">
-            <option>Call</option><option>Meeting</option><option>Email</option><option>Site Visit</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-input" id="logDate">
-        </div>
+        <div class="form-group"><label class="form-label">Type</label><select class="form-select" id="logType"><option>Call</option><option>Meeting</option><option>Email</option><option>Site Visit</option></select></div>
+        <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="logDate"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Subject</label>
-        <input type="text" class="form-input" id="logSubject" placeholder="e.g. Quarterly review Q2 2026">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-textarea" id="logNotes" placeholder="Key discussion points, client sentiment, issues raised..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Action items (pipe-separated)</label>
-        <input type="text" class="form-input" id="logActions" placeholder="Send facility letter|Follow up on financials">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Follow-up date</label>
-        <input type="date" class="form-input" id="logFollowup">
-      </div>
-      <button class="btn btn-primary" style="width:100%;padding:10px;" onclick="submitInteraction()">Save interaction</button>
+      <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-input" id="logSubject" placeholder="e.g. Quarterly review Q2 2026"></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="logNotes" placeholder="Key discussion points..."></textarea></div>
+      <div class="form-group"><label class="form-label">Action items (pipe-separated)</label><input type="text" class="form-input" id="logActions" placeholder="Send letter|Follow up on financials"></div>
+      <div class="form-group"><label class="form-label">Follow-up date</label><input type="date" class="form-input" id="logFollowup"></div>
+      <button class="btn btn-primary" style="width:100%;padding:11px;justify-content:center;" onclick="submitInteraction()">Save interaction</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 const API = 'https://cbz-crm.onrender.com';
-let currentRM = null;
-let allClients = [];
-let allTasks = [];
-let allAlerts = [];
+const USERS = {
+  'admin': {pass:'cbz2026',  name:'Admin User'},
+  'ca':    {pass:'rm1234',   name:'Chiedza Mawere'},
+  'cc':    {pass:'rm1234',   name:'Courage Chikwanda'},
+  'ce':    {pass:'rm1234',   name:'Chipo Edzai'},
+  'ck':    {pass:'rm1234',   name:'Chaka Kamba'},
+};
+let currentRM=null, allClients=[], allTasks=[], allAlerts=[];
 
-// ── INIT ──
-async function init() {
-  const rms = await fetch(`${API}/api/rms`).then(r=>r.json());
-  const sel = document.getElementById('rmSelect');
-  sel.innerHTML = rms.map(r=>`<option value="${r.id}">${r.code} — ${r.full_name.split(' ')[0]}</option>`).join('');
+function doLogin(){
+  const user=document.getElementById('loginUser').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginError');
+  if(USERS[user]&&USERS[user].pass===pass){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('sidebar').style.display='flex';
+    document.getElementById('mainContent').style.display='flex';
+    document.getElementById('sidebarName').textContent=USERS[user].name.split(' ')[0];
+    document.getElementById('sidebarAvatar').textContent=USERS[user].name[0];
+    err.style.display='none';
+    initApp();
+  } else {
+    err.style.display='block';
+    document.getElementById('loginPass').value='';
+  }
+}
+function doLogout(){
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('sidebar').style.display='none';
+  document.getElementById('mainContent').style.display='none';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+async function initApp(){
+  const rms=await fetch(`${API}/api/rms`).then(r=>r.json());
+  document.getElementById('rmSelect').innerHTML=rms.map(r=>`<option value="${r.id}">${r.code} — ${r.full_name.split(' ')[0]}</option>`).join('');
   await switchRM();
 }
-
-async function switchRM() {
-  const rmId = document.getElementById('rmSelect').value;
-  if (!rmId) return;
-  currentRM = parseInt(rmId);
-  await loadDashboard();
-  await loadClients();
-  await loadTasks();
-  await loadAlerts();
+async function switchRM(){
+  const rmId=document.getElementById('rmSelect').value;
+  if(!rmId)return;
+  currentRM=parseInt(rmId);
+  await loadDashboard(); await loadClients(); await loadTasks(); await loadAlerts();
 }
 
-// ── DASHBOARD ──
-async function loadDashboard() {
-  const data = await fetch(`${API}/api/rms/${currentRM}/dashboard`).then(r=>r.json());
-  const s = data.summary;
-
-  document.getElementById('topbarSub').textContent =
-    `${data.rm.full_name} · ${data.rm.code} portfolio`;
-
-  // KPIs
-  const util = s.utilisation_pct;
-  const utilColor = util > 85 ? 'danger' : util > 70 ? 'warn' : 'good';
-  document.getElementById('kpiGrid').innerHTML = `
-    <div class="kpi info">
-      <div class="kpi-label">Clients</div>
-      <div class="kpi-value">${s.client_count}</div>
-      <div class="kpi-sub">Active accounts</div>
-    </div>
-    <div class="kpi ${utilColor}">
-      <div class="kpi-label">Portfolio utilisation</div>
-      <div class="kpi-value">${util}%</div>
-      <div class="kpi-sub">$${fmt(s.total_utilised)} of $${fmt(s.total_limit_usd)}</div>
-    </div>
-    <div class="kpi ${s.open_tasks > 0 ? 'warn' : 'good'}">
-      <div class="kpi-label">Open tasks</div>
-      <div class="kpi-value">${s.open_tasks}</div>
-      <div class="kpi-sub">Pending actions</div>
-    </div>
-    <div class="kpi ${s.unread_alerts > 0 ? 'danger' : 'good'}">
-      <div class="kpi-label">Unread alerts</div>
-      <div class="kpi-value">${s.unread_alerts}</div>
-      <div class="kpi-sub">Require attention</div>
-    </div>
-    <div class="kpi ${s.covenant_breaches > 0 ? 'danger' : 'good'}">
-      <div class="kpi-label">Covenant breaches</div>
-      <div class="kpi-value">${s.covenant_breaches}</div>
-      <div class="kpi-sub">Active breaches</div>
-    </div>
+async function loadDashboard(){
+  const data=await fetch(`${API}/api/rms/${currentRM}/dashboard`).then(r=>r.json());
+  const s=data.summary;
+  document.getElementById('topbarSub').textContent=`${data.rm.full_name} · ${data.rm.code} portfolio`;
+  const util=s.utilisation_pct;
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="kpi"><div class="kpi-bar"></div><div class="kpi-icon">🏢</div><div class="kpi-label">Active clients</div><div class="kpi-value">${s.client_count}</div><div class="kpi-sub">In portfolio</div></div>
+    <div class="kpi"><div class="kpi-bar gold"></div><div class="kpi-icon">💰</div><div class="kpi-label">Utilisation</div><div class="kpi-value">${util}%</div><div class="kpi-sub">$${fmt(s.total_utilised)} of $${fmt(s.total_limit_usd)}</div></div>
+    <div class="kpi"><div class="kpi-bar ${s.open_tasks>0?'warn':'good'}"></div><div class="kpi-icon">✅</div><div class="kpi-label">Open tasks</div><div class="kpi-value">${s.open_tasks}</div><div class="kpi-sub">Pending actions</div></div>
+    <div class="kpi"><div class="kpi-bar ${s.unread_alerts>0?'danger':'good'}"></div><div class="kpi-icon">🔔</div><div class="kpi-label">Unread alerts</div><div class="kpi-value">${s.unread_alerts}</div><div class="kpi-sub">Need attention</div></div>
+    <div class="kpi"><div class="kpi-bar ${s.covenant_breaches>0?'danger':'good'}"></div><div class="kpi-icon">⚠️</div><div class="kpi-label">Covenant breaches</div><div class="kpi-value">${s.covenant_breaches}</div><div class="kpi-sub">${s.covenant_breaches>0?'Immediate action':'All compliant'}</div></div>
   `;
-  document.getElementById('clientCount').textContent = `${s.client_count} clients`;
-
-  // Client list
-  document.getElementById('dashClientList').innerHTML = data.clients.map(c => `
+  document.getElementById('clientCount').textContent=`${s.client_count} active accounts`;
+  document.getElementById('dashClientList').innerHTML=data.clients.map(c=>`
     <div class="client-row" onclick="openClient(${c.id})">
       <div class="client-avatar">${c.company_name[0]}</div>
-      <div class="client-info">
-        <div class="client-name">${c.company_name}</div>
-        <div class="client-meta">${c.sector} · ${c.currency}</div>
-      </div>
-      <div class="client-right">
-        <span class="badge badge-${c.credit_rating.toLowerCase()}">${c.credit_rating}</span>
-        <div style="margin-top:4px;" class="${healthColor(c.relationship_health)}">${c.relationship_health}%</div>
-      </div>
-    </div>
-  `).join('') || '<div class="empty">No clients</div>';
+      <div class="client-info"><div class="client-name">${c.company_name}</div><div class="client-meta">${c.sector}</div></div>
+      <div class="client-right"><span class="badge badge-${c.credit_rating.toLowerCase()}">${c.credit_rating}</span><div class="${healthColor(c.relationship_health)}" style="font-size:11px;margin-top:4px;">${c.relationship_health}%</div></div>
+    </div>`).join('')||'<div class="empty">No clients</div>';
 
-  // Tasks
-  document.getElementById('dashTaskList').innerHTML = data.open_tasks.slice(0,5).map(t=>`
-    <div class="list-row">
-      <div class="list-dot" style="background:${priorityColor(t.priority)}"></div>
-      <div class="list-main">
-        <div class="list-subject">${t.title}</div>
-        <div class="list-sub">${t.company_name||'General'}</div>
-      </div>
-      <div class="list-right">
-        <span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span>
-        <div style="margin-top:3px;">${t.due_date||'—'}</div>
-      </div>
+  const portfolio=await fetch(`${API}/api/portfolio/summary`).then(r=>r.json());
+  document.getElementById('utilChart').innerHTML=`
+    <div class="bar-chart">
+      ${portfolio.map(r=>{
+        const h=Math.max(r.utilisation_pct,4);
+        const color=r.utilisation_pct>85?'var(--danger)':r.utilisation_pct>70?'var(--warn)':'var(--accent)';
+        return `<div class="bar-group"><div class="bar-track"><div class="bar-fill" style="height:${h}%;background:${color};opacity:${r.rm_id===currentRM?1:0.35};"></div></div><div class="bar-label">${r.rm_code}</div></div>`;
+      }).join('')}
     </div>
-  `).join('') || '<div class="empty">No open tasks</div>';
+    <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;">
+      ${portfolio.map(r=>`<div style="font-size:11px;color:var(--muted);"><strong style="color:var(--text);">${r.rm_code}</strong> ${r.utilisation_pct}%</div>`).join('')}
+    </div>`;
 
-  // Covenants
-  document.getElementById('dashCovenantList').innerHTML = data.covenant_breaches.map(cv=>`
-    <div class="list-row">
-      <div class="list-dot" style="background:var(--danger)"></div>
-      <div class="list-main">
-        <div class="list-subject">${cv.company_name}</div>
-        <div class="list-sub">${cv.covenant_type} · ${cv.threshold||''}</div>
-      </div>
-      <div class="list-right">
-        <span class="badge badge-breach">Breach</span>
-        <div style="margin-top:3px;">${cv.next_due||'—'}</div>
-      </div>
-    </div>
-  `).join('') || '<div class="empty" style="color:var(--good)">✓ No covenant breaches</div>';
+  document.getElementById('dashTaskList').innerHTML=data.open_tasks.slice(0,5).map(t=>`
+    <div class="list-row"><div class="list-dot" style="background:${priorityColor(t.priority)}"></div>
+    <div class="list-main"><div class="list-subject">${t.title}</div><div class="list-sub">${t.company_name||'General'}</div></div>
+    <div class="list-right"><span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span><div style="margin-top:3px;">${t.due_date||'—'}</div></div></div>`).join('')||'<div class="empty">No open tasks ✓</div>';
 
-  // Recent interactions
-  document.getElementById('dashInteractions').innerHTML = data.recent_interactions.map(i=>`
-    <div class="list-row">
-      <div class="list-dot dot-${i.interaction_type.toLowerCase().replace(' ','')}"></div>
-      <div class="list-main">
-        <div class="list-subject">${i.subject}</div>
-        <div class="list-sub">${i.company_name} · ${i.interaction_type}</div>
-      </div>
-      <div class="list-right">${i.interaction_date}</div>
-    </div>
-  `).join('') || '<div class="empty">No recent interactions</div>';
+  document.getElementById('dashCovenantList').innerHTML=data.covenant_breaches.map(cv=>`
+    <div class="list-row"><div class="list-dot" style="background:var(--danger)"></div>
+    <div class="list-main"><div class="list-subject">${cv.company_name}</div><div class="list-sub">${cv.covenant_type}</div></div>
+    <div class="list-right"><span class="badge badge-breach">Breach</span></div></div>`).join('')||'<div class="empty" style="color:var(--good);">✓ All covenants compliant</div>';
 
-  updateBadges(s.open_tasks, s.unread_alerts);
+  document.getElementById('dashInteractions').innerHTML=data.recent_interactions.map(i=>`
+    <div class="list-row"><div class="list-dot" style="background:${intColor(i.interaction_type)}"></div>
+    <div class="list-main"><div class="list-subject">${i.subject}</div><div class="list-sub">${i.company_name} · ${i.interaction_type}</div></div>
+    <div class="list-right">${i.interaction_date}</div></div>`).join('')||'<div class="empty">No interactions yet</div>';
+
+  updateBadges(s.open_tasks,s.unread_alerts);
 }
 
-// ── CLIENTS ──
-async function loadClients() {
-  allClients = await fetch(`${API}/api/clients?rm_id=${currentRM}`).then(r=>r.json());
-  // populate sector filter
-  const sectors = [...new Set(allClients.map(c=>c.sector))].sort();
-  const sel = document.getElementById('filterSector');
-  sel.innerHTML = `<option value="">All sectors</option>` + sectors.map(s=>`<option>${s}</option>`).join('');
+async function loadClients(){
+  allClients=await fetch(`${API}/api/clients?rm_id=${currentRM}`).then(r=>r.json());
+  const sectors=[...new Set(allClients.map(c=>c.sector))].sort();
+  document.getElementById('filterSector').innerHTML=`<option value="">All sectors</option>`+sectors.map(s=>`<option>${s}</option>`).join('');
   renderClients();
 }
-
-function renderClients() {
-  const sector = document.getElementById('filterSector').value;
-  const rating = document.getElementById('filterRating').value;
-  let list = allClients;
-  if (sector) list = list.filter(c=>c.sector===sector);
-  if (rating) list = list.filter(c=>c.credit_rating===rating);
-
-  document.getElementById('clientListFull').innerHTML = list.map(c=>{
-    const util = c.annual_turnover ? `$${fmt(c.annual_turnover)}` : '—';
-    return `
+function renderClients(){
+  const sector=document.getElementById('filterSector').value;
+  const rating=document.getElementById('filterRating').value;
+  let list=allClients;
+  if(sector)list=list.filter(c=>c.sector===sector);
+  if(rating)list=list.filter(c=>c.credit_rating===rating);
+  document.getElementById('clientListFull').innerHTML=list.map(c=>`
     <div class="client-row" onclick="openClient(${c.id})">
       <div class="client-avatar">${c.company_name[0]}</div>
-      <div class="client-info">
-        <div class="client-name">${c.company_name}</div>
-        <div class="client-meta">${c.sector} · Last contact: ${c.last_contact||'Never'}</div>
-      </div>
-      <div class="client-right" style="min-width:140px;">
-        <div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:4px;">
-          <span class="badge badge-${c.credit_rating.toLowerCase()}">${c.credit_rating}</span>
-          <span class="badge badge-${c.currency.toLowerCase()}">${c.currency}</span>
-        </div>
-        <div class="${healthColor(c.relationship_health)}" style="font-size:11px;">Health ${c.relationship_health}%</div>
-      </div>
-    </div>`;
-  }).join('') || '<div class="empty">No clients match filter</div>';
+      <div class="client-info"><div class="client-name">${c.company_name}</div><div class="client-meta">${c.sector} · Last contact: ${c.last_contact||'Never'}</div></div>
+      <div class="client-right"><div style="display:flex;gap:5px;justify-content:flex-end;margin-bottom:4px;"><span class="badge badge-${c.credit_rating.toLowerCase()}">${c.credit_rating}</span><span class="badge badge-${c.currency.toLowerCase()}">${c.currency}</span></div><div class="${healthColor(c.relationship_health)}" style="font-size:11px;">Health ${c.relationship_health}%</div></div>
+    </div>`).join('')||'<div class="empty">No clients match filter</div>';
 }
 
-// ── TASKS ──
-async function loadTasks() {
-  allTasks = await fetch(`${API}/api/tasks?rm_id=${currentRM}`).then(r=>r.json());
+async function loadTasks(){
+  allTasks=await fetch(`${API}/api/tasks?rm_id=${currentRM}`).then(r=>r.json());
   renderTasksPanel();
 }
-
-function renderTasksPanel() {
-  const status = document.getElementById('filterTaskStatus').value;
-  let list = allTasks;
-  if (status) list = list.filter(t=>t.status===status);
-  document.getElementById('taskListFull').innerHTML = list.map(t=>`
-    <div class="list-row">
-      <div class="list-dot" style="background:${priorityColor(t.priority)}"></div>
-      <div class="list-main">
-        <div class="list-subject">${t.title}</div>
-        <div class="list-sub">${t.company_name||'General'} · ${t.description||''}</div>
-      </div>
-      <div class="list-right" style="min-width:120px;">
-        <span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span>
-        <div style="margin-top:4px;">${t.due_date||'No due date'}</div>
-        ${t.status !== 'Done' ? `<button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;margin-top:4px;" onclick="markTaskDone(${t.id})">Mark done</button>` : ''}
-      </div>
-    </div>
-  `).join('') || '<div class="empty">No tasks</div>';
+function renderTasksPanel(){
+  const status=document.getElementById('filterTaskStatus').value;
+  let list=allTasks;
+  if(status)list=list.filter(t=>t.status===status);
+  document.getElementById('taskListFull').innerHTML=list.map(t=>`
+    <div class="list-row"><div class="list-dot" style="background:${priorityColor(t.priority)}"></div>
+    <div class="list-main"><div class="list-subject">${t.title}</div><div class="list-sub">${t.company_name||'General'}</div></div>
+    <div class="list-right" style="min-width:130px;"><span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span><div style="margin-top:3px;">${t.due_date||'—'}</div>
+    ${t.status!=='Done'?`<button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;margin-top:4px;" onclick="markTaskDone(${t.id})">Mark done</button>`:''}</div></div>`).join('')||'<div class="empty">No tasks</div>';
+}
+async function markTaskDone(id){
+  await fetch(`${API}/api/tasks/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'Done'})});
+  showToast('Task marked as done');await loadTasks();await loadDashboard();
 }
 
-async function markTaskDone(id) {
-  await fetch(`${API}/api/tasks/${id}`, {
-    method:'PUT', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({status:'Done'})
-  });
-  showToast('Task marked as done');
-  await loadTasks();
-  await loadDashboard();
-}
-
-// ── ALERTS ──
-async function loadAlerts() {
-  allAlerts = await fetch(`${API}/api/alerts?rm_id=${currentRM}`).then(r=>r.json());
+async function loadAlerts(){
+  allAlerts=await fetch(`${API}/api/alerts?rm_id=${currentRM}`).then(r=>r.json());
   renderAlerts();
 }
-
-function renderAlerts() {
-  document.getElementById('alertListFull').innerHTML = allAlerts.map(a=>`
-    <div class="alert-row ${a.is_read?'read':''}" onclick="markAlertRead(${a.id}, this)">
+function renderAlerts(){
+  document.getElementById('alertListFull').innerHTML=allAlerts.map(a=>`
+    <div class="alert-row ${a.is_read?'read':''}" onclick="markAlertRead(${a.id},this)">
       <div class="alert-icon alert-${a.severity.toLowerCase()}">${alertIcon(a.alert_type)}</div>
-      <div class="list-main">
-        <div class="list-subject">${a.message}</div>
-        <div class="list-sub">${a.alert_type} · ${a.created_at?.split('T')[0]||a.created_at||''}</div>
-      </div>
-      <div class="list-right">
-        <span class="badge badge-${a.severity.toLowerCase()}">${a.severity}</span>
-      </div>
-    </div>
-  `).join('') || '<div class="empty">No alerts</div>';
+      <div class="list-main"><div class="list-subject">${a.message}</div><div class="list-sub">${a.alert_type}</div></div>
+      <div class="list-right"><span class="badge badge-${a.severity.toLowerCase()}">${a.severity}</span></div>
+    </div>`).join('')||'<div class="empty">No alerts</div>';
+}
+async function markAlertRead(id,el){
+  await fetch(`${API}/api/alerts/${id}/read`,{method:'PUT'});
+  el.classList.add('read');allAlerts=allAlerts.map(a=>a.id===id?{...a,is_read:1}:a);
+  updateBadges(null,allAlerts.filter(a=>!a.is_read).length);
+}
+async function markAllRead(){
+  for(const a of allAlerts.filter(a=>!a.is_read))await fetch(`${API}/api/alerts/${a.id}/read`,{method:'PUT'});
+  await loadAlerts();updateBadges(null,0);showToast('All alerts marked as read');
 }
 
-async function markAlertRead(id, el) {
-  await fetch(`${API}/api/alerts/${id}/read`, {method:'PUT'});
-  el.classList.add('read');
-  allAlerts = allAlerts.map(a=>a.id===id?{...a,is_read:1}:a);
-  const unread = allAlerts.filter(a=>!a.is_read).length;
-  updateBadges(null, unread);
-}
-
-async function markAllRead() {
-  const unread = allAlerts.filter(a=>!a.is_read);
-  for (const a of unread) await fetch(`${API}/api/alerts/${a.id}/read`,{method:'PUT'});
-  await loadAlerts();
-  updateBadges(null, 0);
-  showToast('All alerts marked as read');
-}
-
-// ── PORTFOLIO VIEW ──
-async function loadPortfolio() {
-  const data = await fetch(`${API}/api/portfolio/summary`).then(r=>r.json());
-  const totals = data.reduce((acc,r)=>({
-    clients: acc.clients + r.client_count,
-    limit:   acc.limit   + r.total_limit,
-    util:    acc.util    + r.total_utilised,
-    breaches:acc.breaches+ r.covenant_breaches,
-    npls:    acc.npls    + r.npl_count,
-  }),{clients:0,limit:0,util:0,breaches:0,npls:0});
-
-  const overallUtil = totals.limit>0 ? (totals.util/totals.limit*100).toFixed(1) : 0;
-
-  document.getElementById('portfolioKpis').innerHTML = `
-    <div class="kpi info"><div class="kpi-label">Total clients</div><div class="kpi-value">${totals.clients}</div><div class="kpi-sub">Across all RMs</div></div>
-    <div class="kpi ${overallUtil>85?'danger':overallUtil>70?'warn':'good'}"><div class="kpi-label">Portfolio utilisation</div><div class="kpi-value">${overallUtil}%</div><div class="kpi-sub">$${fmt(totals.util)} of $${fmt(totals.limit)}</div></div>
-    <div class="kpi ${totals.breaches>0?'danger':'good'}"><div class="kpi-label">Covenant breaches</div><div class="kpi-value">${totals.breaches}</div><div class="kpi-sub">Dept-wide</div></div>
-    <div class="kpi ${totals.npls>0?'danger':'good'}"><div class="kpi-label">NPL facilities</div><div class="kpi-value">${totals.npls}</div><div class="kpi-sub">Non-performing</div></div>
+async function loadPortfolio(){
+  const data=await fetch(`${API}/api/portfolio/summary`).then(r=>r.json());
+  const tot=data.reduce((acc,r)=>({clients:acc.clients+r.client_count,limit:acc.limit+r.total_limit,util:acc.util+r.total_utilised,breaches:acc.breaches+r.covenant_breaches,npls:acc.npls+r.npl_count}),{clients:0,limit:0,util:0,breaches:0,npls:0});
+  const ov=tot.limit>0?(tot.util/tot.limit*100).toFixed(1):0;
+  document.getElementById('portfolioKpis').innerHTML=`
+    <div class="kpi"><div class="kpi-bar"></div><div class="kpi-icon">🏢</div><div class="kpi-label">Total clients</div><div class="kpi-value">${tot.clients}</div><div class="kpi-sub">All RMs</div></div>
+    <div class="kpi"><div class="kpi-bar gold"></div><div class="kpi-icon">💰</div><div class="kpi-label">Utilisation</div><div class="kpi-value">${ov}%</div><div class="kpi-sub">$${fmt(tot.util)} of $${fmt(tot.limit)}</div></div>
+    <div class="kpi"><div class="kpi-bar ${tot.breaches>0?'danger':'good'}"></div><div class="kpi-icon">⚠️</div><div class="kpi-label">Covenant breaches</div><div class="kpi-value">${tot.breaches}</div><div class="kpi-sub">Dept-wide</div></div>
+    <div class="kpi"><div class="kpi-bar ${tot.npls>0?'danger':'good'}"></div><div class="kpi-icon">🔴</div><div class="kpi-label">NPL facilities</div><div class="kpi-value">${tot.npls}</div><div class="kpi-sub">Non-performing</div></div>
   `;
-
-  document.getElementById('portfolioTable').innerHTML = data.map(r=>{
-    const util = r.utilisation_pct;
-    const fillColor = util>85?'var(--danger)':util>70?'var(--warn)':'var(--good)';
-    return `
-    <div class="list-row" style="align-items:center;">
-      <div style="width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);color:var(--accent2);font-size:14px;flex-shrink:0;">${r.rm_code}</div>
-      <div style="flex:1;min-width:0;padding:0 12px;">
+  document.getElementById('portfolioTable').innerHTML=data.map(r=>{
+    const fc=r.utilisation_pct>85?'var(--danger)':r.utilisation_pct>70?'var(--warn)':'var(--accent)';
+    return `<div class="portfolio-row">
+      <div class="rm-badge">${r.rm_code}</div>
+      <div style="flex:1;min-width:0;padding:0 14px;">
         <div style="font-weight:600;font-size:13px;">${r.rm_name}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:3px;">${r.client_count} clients · $${fmt(r.total_limit)} limit</div>
-        <div style="margin-top:6px;">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px;"><span>Utilisation</span><span>${util}%</span></div>
-          <div class="util-bar-wrap"><div class="util-bar-fill" style="width:${util}%;background:${fillColor}"></div></div>
-        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${r.client_count} clients · $${fmt(r.total_limit)} limit</div>
+        <div style="margin-top:7px;"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px;"><span>Utilisation</span><span>${r.utilisation_pct}%</span></div><div class="util-bar-wrap"><div class="util-bar-fill" style="width:${r.utilisation_pct}%;background:${fc}"></div></div></div>
       </div>
-      <div style="text-align:right;flex-shrink:0;min-width:140px;">
-        <div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;">
-          ${r.covenant_breaches>0?`<span class="badge badge-breach">${r.covenant_breaches} breach${r.covenant_breaches>1?'es':''}</span>`:''}
-          ${r.npl_count>0?`<span class="badge badge-npl">${r.npl_count} NPL</span>`:''}
-          ${r.open_tasks>0?`<span class="badge badge-open">${r.open_tasks} tasks</span>`:''}
-          ${r.covenant_breaches===0&&r.npl_count===0?`<span class="badge badge-compliant">Clean</span>`:''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+      <div style="text-align:right;flex-shrink:0;min-width:150px;"><div style="display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap;">
+        ${r.covenant_breaches>0?`<span class="badge badge-breach">${r.covenant_breaches} breach${r.covenant_breaches>1?'es':''}</span>`:''}
+        ${r.npl_count>0?`<span class="badge badge-npl">${r.npl_count} NPL</span>`:''}
+        ${r.open_tasks>0?`<span class="badge badge-open">${r.open_tasks} tasks</span>`:''}
+        ${r.covenant_breaches===0&&r.npl_count===0?`<span class="badge badge-compliant">Clean</span>`:''}
+      </div></div>
+    </div>`;}).join('');
 }
 
-// ── CLIENT 360 ──
-async function openClient(id) {
+async function openClient(id){
   document.getElementById('clientModal').classList.add('open');
-  document.getElementById('modalBody').innerHTML = '<div class="loading"><div class="spinner"></div><br>Loading profile...</div>';
-
-  const d = await fetch(`${API}/api/clients/${id}`).then(r=>r.json());
-  const c = d.client;
-
-  document.getElementById('modalClientName').textContent = c.company_name;
-  document.getElementById('modalClientMeta').textContent =
-    `${c.sector} · ${c.rm_name} (${c.rm_code}) · ${c.client_code}`;
-
-  const totalLimit = d.facilities.reduce((s,f)=>s+f.limit_amount,0);
-  const totalUtil  = d.facilities.reduce((s,f)=>s+f.utilisation,0);
-  const utilPct    = totalLimit>0?(totalUtil/totalLimit*100).toFixed(1):0;
-
-  document.getElementById('modalBody').innerHTML = `
-    <!-- KPIs -->
+  document.getElementById('modalBody').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const d=await fetch(`${API}/api/clients/${id}`).then(r=>r.json());
+  const c=d.client;
+  document.getElementById('modalClientName').textContent=c.company_name;
+  document.getElementById('modalClientMeta').textContent=`${c.sector} · ${c.rm_name} (${c.rm_code}) · ${c.client_code}`;
+  const tl=d.facilities.reduce((s,f)=>s+f.limit_amount,0);
+  const tu=d.facilities.reduce((s,f)=>s+f.utilisation,0);
+  const up=tl>0?(tu/tl*100).toFixed(1):0;
+  document.getElementById('modalBody').innerHTML=`
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px;">
-      <div class="kpi ${healthClass(c.relationship_health)}" style="padding:12px 14px;">
-        <div class="kpi-label">Health score</div>
-        <div class="kpi-value" style="font-size:22px;">${c.relationship_health}%</div>
-      </div>
-      <div class="kpi" style="padding:12px 14px;">
-        <div class="kpi-label">Credit rating</div>
-        <div class="kpi-value" style="font-size:22px;">${c.credit_rating}</div>
-      </div>
-      <div class="kpi ${utilPct>85?'danger':utilPct>70?'warn':'good'}" style="padding:12px 14px;">
-        <div class="kpi-label">Utilisation</div>
-        <div class="kpi-value" style="font-size:22px;">${utilPct}%</div>
-      </div>
+      <div class="kpi" style="padding:12px 14px;"><div class="kpi-bar ${healthClass(c.relationship_health)}"></div><div class="kpi-label">Health</div><div class="kpi-value" style="font-size:22px;">${c.relationship_health}%</div></div>
+      <div class="kpi" style="padding:12px 14px;"><div class="kpi-bar"></div><div class="kpi-label">Rating</div><div class="kpi-value" style="font-size:22px;">${c.credit_rating}</div></div>
+      <div class="kpi" style="padding:12px 14px;"><div class="kpi-bar ${up>85?'danger':up>70?'warn':'good'}"></div><div class="kpi-label">Utilisation</div><div class="kpi-value" style="font-size:22px;">${up}%</div></div>
     </div>
-
     <div class="section-title">Client details</div>
     <div class="detail-grid">
-      <div class="detail-item"><div class="detail-label">Sector</div><div class="detail-value">${c.sector}</div></div>
-      <div class="detail-item"><div class="detail-label">Currency</div><div class="detail-value">${c.currency}</div></div>
-      <div class="detail-item"><div class="detail-label">Annual turnover</div><div class="detail-value">$${fmt(c.annual_turnover)}</div></div>
-      <div class="detail-item"><div class="detail-label">Onboarded</div><div class="detail-value">${c.onboarded_date||'—'}</div></div>
-      <div class="detail-item"><div class="detail-label">Last contact</div><div class="detail-value">${c.last_contact||'Never'}</div></div>
-      <div class="detail-item"><div class="detail-label">RM</div><div class="detail-value">${c.rm_name}</div></div>
+      <div><div class="detail-label">Sector</div><div class="detail-value">${c.sector}</div></div>
+      <div><div class="detail-label">Currency</div><div class="detail-value">${c.currency}</div></div>
+      <div><div class="detail-label">Annual turnover</div><div class="detail-value">$${fmt(c.annual_turnover)}</div></div>
+      <div><div class="detail-label">Onboarded</div><div class="detail-value">${c.onboarded_date||'—'}</div></div>
+      <div><div class="detail-label">Last contact</div><div class="detail-value">${c.last_contact||'Never'}</div></div>
+      <div><div class="detail-label">RM</div><div class="detail-value">${c.rm_name}</div></div>
     </div>
-
-    ${d.contacts.length ? `
-    <div class="section-title">Key contacts</div>
-    ${d.contacts.map(ct=>`
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
-        <div style="flex:1"><div style="font-weight:600;font-size:13px;">${ct.full_name}</div><div style="font-size:11px;color:var(--muted);">${ct.title}</div></div>
-        <div style="font-size:11px;color:var(--muted);text-align:right;">${ct.email||''}</div>
-      </div>`).join('')}` : ''}
-
+    ${d.contacts.length?`<div class="section-title">Key contacts</div>${d.contacts.map(ct=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);"><div style="flex:1"><div style="font-weight:600;font-size:13px;">${ct.full_name}</div><div style="font-size:11px;color:var(--muted);">${ct.title}</div></div><div style="font-size:11px;color:var(--muted);">${ct.email||''}</div></div>`).join('')}`:''}
     <div class="section-title">Facilities</div>
-    ${d.facilities.map(f=>{
-      const u = f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(1):0;
-      const fc = u>90?'var(--danger)':u>75?'var(--warn)':'var(--good)';
-      return `
-      <div class="facility-card">
-        <div class="facility-top">
-          <div>
-            <span class="facility-type">${f.facility_type}</span>
-            <span class="badge badge-${f.status.toLowerCase()}" style="margin-left:8px;">${f.status}</span>
-          </div>
-          <div class="facility-amount">${f.currency} ${fmt(f.limit_amount)}</div>
-        </div>
-        <div class="facility-util-label"><span>Utilised: ${f.currency} ${fmt(f.utilisation)}</span><span>${u}%</span></div>
-        <div class="util-bar-wrap"><div class="util-bar-fill" style="width:${u}%;background:${fc}"></div></div>
-        <div style="font-size:11px;color:var(--muted);margin-top:6px;">Rate: ${f.interest_rate||'—'}% · Expiry: ${f.expiry_date||'—'}</div>
-      </div>`;
-    }).join('')}
-
-    ${d.covenants.length ? `
-    <div class="section-title">Covenants</div>
-    ${d.covenants.map(cv=>`
-      <div class="covenant-row">
-        <div><div style="font-size:13px;font-weight:500;">${cv.covenant_type}</div><div style="font-size:11px;color:var(--muted);">${cv.description}</div></div>
-        <div style="text-align:right;flex-shrink:0;">
-          <span class="badge badge-${cv.status.toLowerCase()}">${cv.status}</span>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px;">Due: ${cv.next_due||'—'}</div>
-        </div>
-      </div>`).join('')}` : ''}
-
-    ${d.interactions.length ? `
-    <div class="section-title">Interaction history</div>
-    ${d.interactions.slice(0,6).map(i=>`
-      <div class="list-row" style="padding:10px 0;">
-        <div class="list-dot dot-${i.interaction_type.toLowerCase().replace(' ','')}"></div>
-        <div class="list-main">
-          <div class="list-subject">${i.subject}</div>
-          <div class="list-sub">${i.notes?.slice(0,90)||''}${(i.notes?.length||0)>90?'…':''}</div>
-        </div>
-        <div class="list-right">${i.interaction_date}</div>
-      </div>`).join('')}` : '<div class="empty">No interactions logged yet</div>'}
-
-    ${d.tasks.filter(t=>t.status!=='Done').length ? `
-    <div class="section-title">Open tasks</div>
-    ${d.tasks.filter(t=>t.status!=='Done').map(t=>`
-      <div class="list-row" style="padding:8px 0;">
-        <div class="list-dot" style="background:${priorityColor(t.priority)}"></div>
-        <div class="list-main"><div class="list-subject">${t.title}</div></div>
-        <div class="list-right">
-          <span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span>
-          <div style="margin-top:3px;">${t.due_date||'—'}</div>
-        </div>
-      </div>`).join('')}` : ''}
+    ${d.facilities.map(f=>{const u=f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(1):0;const fc=u>90?'var(--danger)':u>75?'var(--warn)':'var(--accent)';return`<div class="facility-card"><div class="facility-top"><div><span class="facility-type">${f.facility_type}</span><span class="badge badge-${f.status.toLowerCase()}" style="margin-left:8px;">${f.status}</span></div><div class="facility-amount">${f.currency} ${fmt(f.limit_amount)}</div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;"><span>Utilised: ${f.currency} ${fmt(f.utilisation)}</span><span>${u}%</span></div><div class="util-bar-wrap"><div class="util-bar-fill" style="width:${u}%;background:${fc}"></div></div><div style="font-size:11px;color:var(--muted);margin-top:6px;">Rate: ${f.interest_rate||'—'}% · Expiry: ${f.expiry_date||'—'}</div></div>`;}).join('')}
+    ${d.covenants.length?`<div class="section-title">Covenants</div>${d.covenants.map(cv=>`<div class="covenant-row"><div><div style="font-size:13px;font-weight:500;">${cv.covenant_type}</div><div style="font-size:11px;color:var(--muted);">${cv.description}</div></div><div style="text-align:right;"><span class="badge badge-${cv.status.toLowerCase()}">${cv.status}</span><div style="font-size:11px;color:var(--muted);margin-top:3px;">Due: ${cv.next_due||'—'}</div></div></div>`).join('')}`:''}
+    ${d.interactions.length?`<div class="section-title">Interaction history</div>${d.interactions.slice(0,6).map(i=>`<div class="list-row" style="padding:10px 0;"><div class="list-dot" style="background:${intColor(i.interaction_type)}"></div><div class="list-main"><div class="list-subject">${i.subject}</div><div class="list-sub">${i.notes?.slice(0,90)||''}${(i.notes?.length||0)>90?'…':''}</div></div><div class="list-right">${i.interaction_date}</div></div>`).join('')}`:'<div class="empty">No interactions yet</div>'}
+    ${d.tasks.filter(t=>t.status!=='Done').length?`<div class="section-title">Open tasks</div>${d.tasks.filter(t=>t.status!=='Done').map(t=>`<div class="list-row" style="padding:8px 0;"><div class="list-dot" style="background:${priorityColor(t.priority)}"></div><div class="list-main"><div class="list-subject">${t.title}</div></div><div class="list-right"><span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span><div style="margin-top:3px;">${t.due_date||'—'}</div></div></div>`).join('')}`:''}
   `;
 }
+function closeClientModal(e){if(e.target===document.getElementById('clientModal'))closeModal();}
+function closeModal(){document.getElementById('clientModal').classList.remove('open');}
 
-function closeClientModal(e) { if(e.target===document.getElementById('clientModal')) closeModal(); }
-function closeModal() { document.getElementById('clientModal').classList.remove('open'); }
-
-// ── LOG INTERACTION ──
-function openLogInteraction() {
-  document.getElementById('logClient').innerHTML = allClients.map(c=>`<option value="${c.id}">${c.company_name}</option>`).join('');
-  document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
+function openLogInteraction(){
+  document.getElementById('logClient').innerHTML=allClients.map(c=>`<option value="${c.id}">${c.company_name}</option>`).join('');
+  document.getElementById('logDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('logModal').classList.add('open');
 }
-function closeLogModal(e) { if(e.target===document.getElementById('logModal')) closeLog(); }
-function closeLog() { document.getElementById('logModal').classList.remove('open'); }
-
-async function submitInteraction() {
-  const clientId = document.getElementById('logClient').value;
-  const payload = {
-    rm_id:            currentRM,
-    interaction_type: document.getElementById('logType').value,
-    subject:          document.getElementById('logSubject').value,
-    notes:            document.getElementById('logNotes').value,
-    action_items:     document.getElementById('logActions').value,
-    interaction_date: document.getElementById('logDate').value,
-    follow_up_date:   document.getElementById('logFollowup').value || null,
-  };
-  if (!payload.subject) { alert('Please enter a subject'); return; }
-
-  await fetch(`${API}/api/clients/${clientId}/interactions`, {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  });
-  closeLog();
-  showToast('Interaction logged successfully');
-  await loadDashboard();
+function closeLogModal(e){if(e.target===document.getElementById('logModal'))closeLog();}
+function closeLog(){document.getElementById('logModal').classList.remove('open');}
+async function submitInteraction(){
+  const cid=document.getElementById('logClient').value;
+  const p={rm_id:currentRM,interaction_type:document.getElementById('logType').value,subject:document.getElementById('logSubject').value,notes:document.getElementById('logNotes').value,action_items:document.getElementById('logActions').value,interaction_date:document.getElementById('logDate').value,follow_up_date:document.getElementById('logFollowup').value||null};
+  if(!p.subject){alert('Please enter a subject');return;}
+  await fetch(`${API}/api/clients/${cid}/interactions`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+  closeLog();showToast('Interaction logged');await loadDashboard();
 }
 
-// ── PANEL NAVIGATION ──
-function showPanel(name, btn) {
+function showPanel(name,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
   document.getElementById(`panel-${name}`).classList.add('active');
-  btn.classList.add('active');
-
-  const titles = {
-    dashboard: 'Dashboard',
-    clients:   'Client portfolio',
-    tasks:     'Tasks',
-    alerts:    'Alerts',
-    portfolio: 'Portfolio view'
-  };
-  document.getElementById('topbarTitle').textContent = titles[name];
-
-  if (name === 'portfolio') loadPortfolio();
+  if(btn)btn.classList.add('active');
+  const titles={dashboard:'Dashboard',clients:'Client portfolio',tasks:'Tasks',alerts:'Alerts',portfolio:'Portfolio view'};
+  document.getElementById('topbarTitle').textContent=titles[name]||name;
+  if(name==='portfolio')loadPortfolio();
 }
 
-// ── HELPERS ──
-function fmt(n) {
-  if (!n && n!==0) return '—';
-  if (n >= 1_000_000) return (n/1_000_000).toFixed(1)+'M';
-  if (n >= 1_000)     return (n/1_000).toFixed(0)+'K';
-  return n.toFixed(0);
+function fmt(n){if(!n&&n!==0)return'—';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return n.toFixed(0);}
+function healthColor(h){return h>=80?'h-good':h>=55?'h-ok':'h-bad';}
+function healthClass(h){return h>=80?'good':h>=55?'warn':'danger';}
+function priorityColor(p){return p==='High'?'var(--danger)':p==='Medium'?'var(--warn)':'var(--good)';}
+function intColor(t){return t==='Call'?'var(--info)':t==='Meeting'?'var(--gold)':t==='Email'?'var(--muted)':'var(--good)';}
+function alertIcon(t){return t.includes('Breach')?'⚠':t.includes('Expiry')?'⏱':t.includes('Cold')?'❄':'🔔';}
+function updateBadges(tasks,alerts){
+  const tb=document.getElementById('taskBadge');const ab=document.getElementById('alertBadge');
+  if(tasks!==null){tb.textContent=tasks;tb.style.display=tasks>0?'':'none';}
+  if(alerts!==null){ab.textContent=alerts;ab.style.display=alerts>0?'':'none';}
 }
-function healthColor(h) {
-  if (h >= 80) return 'h-good';
-  if (h >= 55) return 'h-ok';
-  return 'h-bad';
-}
-function healthClass(h) {
-  if (h >= 80) return 'good';
-  if (h >= 55) return 'warn';
-  return 'danger';
-}
-function priorityColor(p) {
-  if (p==='High')   return 'var(--danger)';
-  if (p==='Medium') return 'var(--warn)';
-  return 'var(--good)';
-}
-function alertIcon(type) {
-  if (type.includes('Breach'))      return '⚠';
-  if (type.includes('Expiry'))      return '⏱';
-  if (type.includes('Cold'))        return '❄';
-  if (type.includes('Overdue'))     return '!';
-  return '🔔';
-}
-function updateBadges(tasks, alerts) {
-  const tb = document.getElementById('taskBadge');
-  const ab = document.getElementById('alertBadge');
-  if (tasks !== null) { tb.textContent = tasks; tb.style.display = tasks>0?'':'none'; }
-  if (alerts !== null) { ab.textContent = alerts; ab.style.display = alerts>0?'':'none'; }
-}
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2800);
-}
-async function refreshAll() {
-  showToast('Refreshing...');
-  await loadDashboard();
-  await loadClients();
-  await loadTasks();
-  await loadAlerts();
-}
-
-// ── BOOT ──
-init();
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+async function refreshAll(){showToast('Refreshing...');await loadDashboard();await loadClients();await loadTasks();await loadAlerts();}
 </script>
 </body>
 </html>
