@@ -367,6 +367,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
         <div class="card-header">
           <div class="card-title">Client portfolio</div>
           <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary" style="padding:6px 14px;font-size:12px;" onclick="document.getElementById('addClientModal').classList.add('open')">+ Add client</button>
             <select class="form-select" style="width:150px;padding:6px 10px;" id="filterSector" onchange="renderClients()"><option value="">All sectors</option></select>
             <select class="form-select" style="width:130px;padding:6px 10px;" id="filterRating" onchange="renderClients()"><option value="">All ratings</option><option>A</option><option>B</option><option>C</option><option>D</option><option>NPL</option></select>
           </div>
@@ -418,7 +419,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
   <div class="modal-drawer">
     <div class="modal-header">
       <div><div class="modal-title" id="modalClientName">—</div><div style="font-size:12px;color:var(--muted);margin-top:3px;" id="modalClientMeta">—</div></div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" id="editClientBtn" onclick="openEditClient()">✎ Edit</button>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
     </div>
     <div class="modal-body" id="modalBody"><div class="loading"><div class="spinner"></div></div></div>
   </div>
@@ -439,6 +443,89 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="form-group"><label class="form-label">Action items (pipe-separated)</label><input type="text" class="form-input" id="logActions" placeholder="Send letter|Follow up on financials"></div>
       <div class="form-group"><label class="form-label">Follow-up date</label><input type="date" class="form-input" id="logFollowup"></div>
       <button class="btn btn-primary" style="width:100%;padding:11px;justify-content:center;" onclick="submitInteraction()">Save interaction</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- EDIT CLIENT MODAL -->
+<div class="modal-overlay" id="editClientModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-drawer" style="width:460px;">
+    <div class="modal-header"><div class="modal-title">Edit client</div><button class="modal-close" onclick="document.getElementById('editClientModal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editClientId">
+      <div class="form-group"><label class="form-label">Company name</label><input type="text" class="form-input" id="editCompanyName"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Credit rating</label>
+          <select class="form-select" id="editRating"><option>A</option><option>B</option><option>C</option><option>D</option><option>NPL</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Relationship health %</label>
+          <input type="number" class="form-input" id="editHealth" min="0" max="100">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Sector</label><input type="text" class="form-input" id="editSector"></div>
+        <div class="form-group"><label class="form-label">Annual turnover (USD)</label><input type="number" class="form-input" id="editTurnover"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="editNotes" style="min-height:60px;"></textarea></div>
+      <button class="btn btn-primary" style="width:100%;padding:11px;justify-content:center;" onclick="submitEditClient()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPDATE FACILITY MODAL -->
+<div class="modal-overlay" id="updateFacilityModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-drawer" style="width:420px;">
+    <div class="modal-header"><div class="modal-title">Update facility</div><button class="modal-close" onclick="document.getElementById('updateFacilityModal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="updateFacilityId">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px;">
+        <div style="font-weight:600;font-size:14px;" id="updateFacilityName">—</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px;" id="updateFacilityLimit">—</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">New limit amount</label><input type="number" class="form-input" id="updateLimit" placeholder="e.g. 5000000"></div>
+        <div class="form-group"><label class="form-label">Current utilisation</label><input type="number" class="form-input" id="updateUtil" placeholder="e.g. 3800000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Interest rate %</label><input type="number" class="form-input" id="updateRate" step="0.1"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-select" id="updateFacilityStatus"><option>Active</option><option>Watch</option><option>NPL</option><option>Expired</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Expiry date</label><input type="date" class="form-input" id="updateExpiry"></div>
+      <button class="btn btn-primary" style="width:100%;padding:11px;justify-content:center;" onclick="submitUpdateFacility()">Update facility</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD NEW CLIENT MODAL -->
+<div class="modal-overlay" id="addClientModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-drawer" style="width:460px;">
+    <div class="modal-header"><div class="modal-title">Add new client</div><button class="modal-close" onclick="document.getElementById('addClientModal').classList.remove('open')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Company name</label><input type="text" class="form-input" id="newClientName" placeholder="e.g. ABC Holdings Ltd"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Sector</label>
+          <select class="form-select" id="newClientSector">
+            <option>Agriculture</option><option>Manufacturing</option><option>Mining</option>
+            <option>FMCG</option><option>Retail</option><option>Telecoms</option>
+            <option>Financial Services</option><option>Energy</option><option>Construction</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Currency</label>
+          <select class="form-select" id="newClientCurrency"><option>USD</option><option>ZiG</option><option>ZAR</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Credit rating</label>
+          <select class="form-select" id="newClientRating"><option>A</option><option selected>B</option><option>C</option><option>D</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Annual turnover</label>
+          <input type="number" class="form-input" id="newClientTurnover" placeholder="e.g. 5000000">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;padding:11px;justify-content:center;margin-top:8px;" onclick="submitAddClient()">Add client</button>
     </div>
   </div>
 </div>
@@ -514,6 +601,9 @@ function doLogout(){
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
+function goHome(){
+  showPanel('dashboard', document.querySelector('[data-panel=dashboard]'));
+}
 
 async function initApp(){
   const rms=await fetch(`${API}/api/rms`).then(r=>r.json());
@@ -548,16 +638,26 @@ async function loadDashboard(){
     </div>`).join('')||'<div class="empty">No clients</div>';
 
   const portfolio=await fetch(`${API}/api/portfolio/summary`).then(r=>r.json());
-  document.getElementById('utilChart').innerHTML=`
-    <div class="bar-chart">
-      ${portfolio.map(r=>{
-        const h=Math.max(r.utilisation_pct,4);
-        const color=r.utilisation_pct>85?'var(--danger)':r.utilisation_pct>70?'var(--warn)':'var(--accent)';
-        return `<div class="bar-group"><div class="bar-track"><div class="bar-fill" style="height:${h}%;background:${color};opacity:${r.rm_id===currentRM?1:0.35};"></div></div><div class="bar-label">${r.rm_code}</div></div>`;
-      }).join('')}
-    </div>
-    <div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;">
-      ${portfolio.map(r=>`<div style="font-size:11px;color:var(--muted);"><strong style="color:var(--text);">${r.rm_code}</strong> ${r.utilisation_pct}%</div>`).join('')}
+  const chartW = 200, chartH = 100, barW = 32, gap = 14;
+  const svgBars = portfolio.map((r, i) => {
+    const h = Math.max((r.utilisation_pct / 100) * chartH, 3);
+    const x = i * (barW + gap);
+    const y = chartH - h;
+    const color = r.utilisation_pct>85?'#c0392b':r.utilisation_pct>70?'#d68910':'#1a3c5e';
+    const opacity = r.rm_id===currentRM ? 1 : 0.35;
+    return `
+      <rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="4" fill="${color}" opacity="${opacity}"/>
+      <text x="${x + barW/2}" y="${chartH + 14}" text-anchor="middle" font-size="10" fill="#8a8a80" font-family="Plus Jakarta Sans,sans-serif">${r.rm_code}</text>
+      <text x="${x + barW/2}" y="${y - 4}" text-anchor="middle" font-size="9" fill="${color}" font-family="DM Mono,monospace" opacity="${opacity}">${r.utilisation_pct}%</text>
+    `;
+  }).join('');
+  const totalW = portfolio.length * (barW + gap) - gap;
+  document.getElementById('utilChart').innerHTML = `
+    <svg width="100%" viewBox="0 0 ${totalW} ${chartH + 20}" xmlns="http://www.w3.org/2000/svg">
+      ${svgBars}
+    </svg>
+    <div style="display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;">
+      ${portfolio.map(r=>`<div style="font-size:11px;color:var(--muted);"><strong style="color:var(--text);">${r.rm_code}</strong> $${fmt(r.total_utilised)}/$${fmt(r.total_limit)}</div>`).join('')}
     </div>`;
 
   document.getElementById('dashTaskList').innerHTML=data.open_tasks.slice(0,5).map(t=>`
@@ -671,6 +771,7 @@ async function openClient(id){
   document.getElementById('clientModal').classList.add('open');
   document.getElementById('modalBody').innerHTML='<div class="loading"><div class="spinner"></div></div>';
   const d=await fetch(`${API}/api/clients/${id}`).then(r=>r.json());
+  currentClientData=d;
   const c=d.client;
   document.getElementById('modalClientName').textContent=c.company_name;
   document.getElementById('modalClientMeta').textContent=`${c.sector} · ${c.rm_name} (${c.rm_code}) · ${c.client_code}`;
@@ -694,7 +795,10 @@ async function openClient(id){
     </div>
     ${d.contacts.length?`<div class="section-title">Key contacts</div>${d.contacts.map(ct=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);"><div style="flex:1"><div style="font-weight:600;font-size:13px;">${ct.full_name}</div><div style="font-size:11px;color:var(--muted);">${ct.title}</div></div><div style="font-size:11px;color:var(--muted);">${ct.email||''}</div></div>`).join('')}`:''}
     <div class="section-title">Facilities</div>
-    ${d.facilities.map(f=>{const u=f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(1):0;const fc=u>90?'var(--danger)':u>75?'var(--warn)':'var(--accent)';return`<div class="facility-card"><div class="facility-top"><div><span class="facility-type">${f.facility_type}</span><span class="badge badge-${f.status.toLowerCase()}" style="margin-left:8px;">${f.status}</span></div><div class="facility-amount">${f.currency} ${fmt(f.limit_amount)}</div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;"><span>Utilised: ${f.currency} ${fmt(f.utilisation)}</span><span>${u}%</span></div><div class="util-bar-wrap"><div class="util-bar-fill" style="width:${u}%;background:${fc}"></div></div><div style="font-size:11px;color:var(--muted);margin-top:6px;">Rate: ${f.interest_rate||'—'}% · Expiry: ${f.expiry_date||'—'}</div></div>`;}).join('')}
+    ${d.facilities.map(f=>{const u=f.limit_amount>0?(f.utilisation/f.limit_amount*100).toFixed(1):0;const fc=u>90?'var(--danger)':u>75?'var(--warn)':'var(--accent)';return`<div class="facility-card"><div class="facility-top"><div><span class="facility-type">${f.facility_type}</span><span class="badge badge-${f.status.toLowerCase()}" style="margin-left:8px;">${f.status}</span></div><div class="facility-amount">${f.currency} ${fmt(f.limit_amount)}</div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;"><span>Utilised: ${f.currency} ${fmt(f.utilisation)}</span><span>${u}%</span></div><div class="util-bar-wrap"><div class="util-bar-fill" style="width:${u}%;background:${fc}"></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+        <div style="font-size:11px;color:var(--muted);">Rate: ${f.interest_rate||'—'}% · Expiry: ${f.expiry_date||'—'}</div>
+        <button class="btn btn-ghost" style="padding:3px 10px;font-size:11px;" onclick="openUpdateFacility(${f.id},'${f.facility_type}','${f.currency}',${f.limit_amount},${f.utilisation},${f.interest_rate||0},'${f.expiry_date||''}','${f.status}')">Update</button>
+      </div></div>`;}).join('')}
     ${d.covenants.length?`<div class="section-title">Covenants</div>${d.covenants.map(cv=>`<div class="covenant-row"><div><div style="font-size:13px;font-weight:500;">${cv.covenant_type}</div><div style="font-size:11px;color:var(--muted);">${cv.description}</div></div><div style="text-align:right;"><span class="badge badge-${cv.status.toLowerCase()}">${cv.status}</span><div style="font-size:11px;color:var(--muted);margin-top:3px;">Due: ${cv.next_due||'—'}</div></div></div>`).join('')}`:''}
     ${d.interactions.length?`<div class="section-title">Interaction history</div>${d.interactions.slice(0,6).map(i=>`<div class="list-row" style="padding:10px 0;"><div class="list-dot" style="background:${intColor(i.interaction_type)}"></div><div class="list-main"><div class="list-subject">${i.subject}</div><div class="list-sub">${i.notes?.slice(0,90)||''}${(i.notes?.length||0)>90?'…':''}</div></div><div class="list-right">${i.interaction_date}</div></div>`).join('')}`:'<div class="empty">No interactions yet</div>'}
     ${d.tasks.filter(t=>t.status!=='Done').length?`<div class="section-title">Open tasks</div>${d.tasks.filter(t=>t.status!=='Done').map(t=>`<div class="list-row" style="padding:8px 0;"><div class="list-dot" style="background:${priorityColor(t.priority)}"></div><div class="list-main"><div class="list-subject">${t.title}</div></div><div class="list-right"><span class="badge badge-${t.status.toLowerCase().replace(' ','-')}">${t.status}</span><div style="margin-top:3px;">${t.due_date||'—'}</div></div></div>`).join('')}`:''}
@@ -741,6 +845,95 @@ function updateBadges(tasks,alerts){
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 async function refreshAll(){showToast('Refreshing...');await loadDashboard();await loadClients();await loadTasks();await loadAlerts();}
+
+// ── CURRENT CLIENT FOR EDITING ──
+let currentClientData = null;
+
+// ── EDIT CLIENT ──
+function openEditClient(){
+  if(!currentClientData) return;
+  const c = currentClientData.client;
+  document.getElementById('editClientId').value = c.id;
+  document.getElementById('editCompanyName').value = c.company_name;
+  document.getElementById('editRating').value = c.credit_rating;
+  document.getElementById('editHealth').value = c.relationship_health;
+  document.getElementById('editSector').value = c.sector;
+  document.getElementById('editTurnover').value = c.annual_turnover || '';
+  document.getElementById('editNotes').value = c.notes || '';
+  document.getElementById('editClientModal').classList.add('open');
+}
+async function submitEditClient(){
+  const id = document.getElementById('editClientId').value;
+  const payload = {
+    company_name:        document.getElementById('editCompanyName').value,
+    credit_rating:       document.getElementById('editRating').value,
+    relationship_health: parseInt(document.getElementById('editHealth').value),
+    sector:              document.getElementById('editSector').value,
+    annual_turnover:     parseFloat(document.getElementById('editTurnover').value) || null,
+    notes:               document.getElementById('editNotes').value,
+  };
+  await fetch(`${API}/api/clients/${id}`, {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  document.getElementById('editClientModal').classList.remove('open');
+  showToast('Client updated successfully');
+  openClient(parseInt(id));
+  await loadClients();
+}
+
+// ── UPDATE FACILITY ──
+function openUpdateFacility(facId, facType, currency, limit, util, rate, expiry, status){
+  document.getElementById('updateFacilityId').value = facId;
+  document.getElementById('updateFacilityName').textContent = facType + ' — ' + currency;
+  document.getElementById('updateFacilityLimit').textContent = 'Current: ' + currency + ' ' + fmt(limit) + ' limit, ' + fmt(util) + ' utilised';
+  document.getElementById('updateLimit').value = limit;
+  document.getElementById('updateUtil').value = util;
+  document.getElementById('updateRate').value = rate || '';
+  document.getElementById('updateExpiry').value = expiry || '';
+  document.getElementById('updateFacilityStatus').value = status;
+  document.getElementById('updateFacilityModal').classList.add('open');
+}
+async function submitUpdateFacility(){
+  const id = document.getElementById('updateFacilityId').value;
+  const payload = {
+    limit_amount:  parseFloat(document.getElementById('updateLimit').value),
+    utilisation:   parseFloat(document.getElementById('updateUtil').value),
+    interest_rate: parseFloat(document.getElementById('updateRate').value) || null,
+    expiry_date:   document.getElementById('updateExpiry').value || null,
+    status:        document.getElementById('updateFacilityStatus').value,
+  };
+  await fetch(`${API}/api/facilities/${id}`, {
+    method: 'PUT', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  document.getElementById('updateFacilityModal').classList.remove('open');
+  showToast('Facility updated');
+  if(currentClientData) openClient(currentClientData.client.id);
+  await loadDashboard();
+}
+
+// ── ADD NEW CLIENT ──
+async function submitAddClient(){
+  const payload = {
+    company_name:    document.getElementById('newClientName').value,
+    sector:          document.getElementById('newClientSector').value,
+    currency:        document.getElementById('newClientCurrency').value,
+    credit_rating:   document.getElementById('newClientRating').value,
+    annual_turnover: parseFloat(document.getElementById('newClientTurnover').value) || null,
+    rm_id:           currentRM,
+  };
+  if(!payload.company_name){ showToast('Please enter company name'); return; }
+  const res = await fetch(`${API}/api/clients`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(r=>r.json());
+  document.getElementById('addClientModal').classList.remove('open');
+  document.getElementById('newClientName').value = '';
+  showToast(`${payload.company_name} added successfully`);
+  await loadClients();
+  await loadDashboard();
+}
 
 // ── USER MANAGEMENT ──
 async function loadUsers(){

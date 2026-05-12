@@ -636,6 +636,45 @@ if __name__ == "__main__":
 
 
 
+
+@app.route("/api/clients/<int:client_id>", methods=["PUT"])
+def update_client(client_id):
+    data = request.json
+    db = get_db()
+    fields = []
+    values = []
+    allowed = ["company_name","credit_rating","relationship_health","sector","annual_turnover","notes","last_contact"]
+    for key in allowed:
+        if key in data:
+            fields.append(f"{key} = ?")
+            values.append(data[key])
+    if not fields:
+        return jsonify({"error": "No fields to update"}), 400
+    values.append(client_id)
+    db.execute(f"UPDATE clients SET {', '.join(fields)} WHERE id = ?", values)
+    db.commit()
+    db.close()
+    return jsonify({"message": "Client updated"})
+
+@app.route("/api/facilities/<int:facility_id>", methods=["PUT"])
+def update_facility(facility_id):
+    data = request.json
+    db = get_db()
+    fields = []
+    values = []
+    allowed = ["limit_amount","utilisation","interest_rate","expiry_date","status"]
+    for key in allowed:
+        if key in data:
+            fields.append(f"{key} = ?")
+            values.append(data[key])
+    if not fields:
+        return jsonify({"error": "No fields to update"}), 400
+    values.append(facility_id)
+    db.execute(f"UPDATE facilities SET {', '.join(fields)} WHERE id = ?", values)
+    db.commit()
+    db.close()
+    return jsonify({"message": "Facility updated"})
+
 # ─────────────────────────────────────────────
 # USER MANAGEMENT
 # ─────────────────────────────────────────────
