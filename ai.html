@@ -212,7 +212,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <nav class="topnav">
   <div class="nav-logo">CBZ CRM — AI Intelligence</div>
   <div class="nav-right">
-    <a class="nav-back" href="/">🏠 Home</a>
+    <a class="nav-back" href="#" onclick="goHome()">🏠 Home</a>
     <a class="nav-back" href="/handover">🔁 Handover</a>
     <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;padding:0 6px;">
       <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" style="width:14px;height:14px;" onerror="this.style.display='none'">
@@ -351,6 +351,10 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <div class="toast" id="toast"></div>
 
 <script>
+function goHome(){
+  sessionStorage.setItem('cbz_logged_in', '1');
+  window.location.href = '/';
+}
 const API = 'https://cbz-crm.onrender.com';
 let allRMs = [];
 let briefClients = [];

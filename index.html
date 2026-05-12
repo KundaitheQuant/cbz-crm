@@ -595,6 +595,8 @@ async function doLogin(){
   }
 }
 function doLogout(){
+  sessionStorage.removeItem('cbz_logged_in');
+  sessionStorage.removeItem('cbz_user');
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('sidebar').style.display='none';
   document.getElementById('mainContent').style.display='none';
