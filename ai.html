@@ -212,8 +212,12 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 <nav class="topnav">
   <div class="nav-logo">CBZ CRM — AI Intelligence</div>
   <div class="nav-right">
-    <a class="nav-back" href="/handover">← Handover centre</a>
-    <a class="nav-back" href="/">← Dashboard</a>
+    <a class="nav-back" href="/">🏠 Home</a>
+    <a class="nav-back" href="/handover">🔁 Handover</a>
+    <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;padding:0 6px;">
+      <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" style="width:14px;height:14px;" onerror="this.style.display='none'">
+      Powered by Gemini
+    </div>
   </div>
 </nav>
 
@@ -273,7 +277,7 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
     <div class="card" id="briefOutputCard" style="display:none;">
       <div class="card-header">
-        <div class="ai-label"><div class="ai-dot"></div> AI-generated handover brief</div>
+        <div style="display:flex;align-items:center;gap:12px;"><div class="ai-label"><div class="ai-dot"></div> AI-generated handover brief</div><span style="font-size:10px;color:var(--muted);letter-spacing:0.05em;">✦ POWERED BY GEMINI</span></div>
         <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="document.getElementById('briefOutputCard').style.display='none'">Dismiss</button>
       </div>
       <div class="card-body">

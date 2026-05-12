@@ -635,6 +635,61 @@ if __name__ == "__main__":
         app.run(debug=True, port=5000)
 
 
+
+# ─────────────────────────────────────────────
+# USER MANAGEMENT
+# ─────────────────────────────────────────────
+
+@app.route("/api/users", methods=["GET"])
+def get_users():
+    db = get_db()
+    users = rows_to_list(db.execute("SELECT id, username, full_name, role, created_at FROM crm_users").fetchall())
+    db.close()
+    return jsonify(users)
+
+@app.route("/api/users", methods=["POST"])
+def create_user():
+    data = request.json
+    required = ["username", "password", "full_name"]
+    for field in required:
+        if field not in data:
+            return jsonify({"error": f"Missing field: {field}"}), 400
+    db = get_db()
+    existing = db.execute("SELECT id FROM crm_users WHERE username = ?", (data["username"].lower(),)).fetchone()
+    if existing:
+        db.close()
+        return jsonify({"error": "Username already exists"}), 400
+    db.execute("""
+        INSERT INTO crm_users (username, password, full_name, role)
+        VALUES (?,?,?,?)
+    """, (data["username"].lower(), data["password"], data["full_name"], data.get("role", "RM")))
+    db.commit()
+    db.close()
+    return jsonify({"message": "User created successfully"}), 201
+
+@app.route("/api/users/<int:user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    db = get_db()
+    db.execute("DELETE FROM crm_users WHERE id = ?", (user_id,))
+    db.commit()
+    db.close()
+    return jsonify({"message": "User deleted"})
+
+@app.route("/api/auth/login", methods=["POST"])
+def login():
+    data = request.json
+    username = data.get("username", "").lower()
+    password = data.get("password", "")
+    db = get_db()
+    user = db.execute(
+        "SELECT * FROM crm_users WHERE username = ? AND password = ?",
+        (username, password)
+    ).fetchone()
+    db.close()
+    if user:
+        return jsonify({"success": True, "user": dict(user)})
+    return jsonify({"success": False, "error": "Invalid credentials"}), 401
+
 # ─────────────────────────────────────────────
 # AI PROXY — routes Gemini calls through Flask
 # so the browser doesn't hit CORS errors

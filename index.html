@@ -268,7 +268,25 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     </div>
     <button class="login-btn" onclick="doLogin()">Sign in to CRM</button>
     <div class="login-error" id="loginError">Invalid username or password</div>
-    <div class="login-hint">CBZ Corporate Banking · Authorised users only<br><br>Demo: admin / cbz2026 &nbsp;|&nbsp; RMs: ca,cc,ce,ck / rm1234</div>
+    <div class="login-hint">CBZ Corporate Banking · Authorised users only</div>
+    <div style="text-align:center;margin-top:14px;">
+      <button onclick="showCreateUser()" style="background:none;border:none;color:var(--accent2);font-size:12px;cursor:pointer;text-decoration:underline;font-family:var(--font-body);">Request access / Create account</button>
+    </div>
+  </div>
+</div>
+
+  <!-- CREATE USER MODAL -->
+  <div id="createUserModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:none;align-items:center;justify-content:center;">
+    <div style="background:white;border-radius:20px;padding:36px 40px;width:380px;box-shadow:0 24px 64px rgba(0,0,0,0.3);animation:loginFade 0.3s ease;">
+      <div style="font-family:var(--font-head);font-size:22px;color:var(--accent);margin-bottom:4px;">Create account</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:24px;">New user registration · Admin approval required</div>
+      <div class="login-field"><label class="login-label">Full name</label><input type="text" class="login-input" id="newFullName" placeholder="e.g. Tatenda Moyo"></div>
+      <div class="login-field"><label class="login-label">Username</label><input type="text" class="login-input" id="newUsername" placeholder="e.g. tm"></div>
+      <div class="login-field"><label class="login-label">Password</label><input type="password" class="login-input" id="newPassword" placeholder="Choose a password"></div>
+      <button onclick="submitCreateUser()" style="width:100%;background:var(--accent);color:white;border:none;border-radius:10px;padding:12px;font-family:var(--font-body);font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;">Create account</button>
+      <div id="createUserMsg" style="font-size:12px;text-align:center;margin-top:10px;display:none;"></div>
+      <div style="text-align:center;margin-top:14px;"><button onclick="hideCreateUser()" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;font-family:var(--font-body);">← Back to sign in</button></div>
+    </div>
   </div>
 </div>
 
@@ -293,6 +311,8 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
     <button class="nav-item" data-panel="portfolio" onclick="showPanel('portfolio',this)"><span class="icon">📊</span> Portfolio view</button>
     <a class="nav-item" href="/handover"><span class="icon">🔁</span> Handover centre</a>
     <a class="nav-item" href="/ai"><span class="icon">✦</span> AI Intelligence</a>
+    <div class="nav-section-label">Admin</div>
+    <button class="nav-item" data-panel="users" onclick="showPanel('users',this)"><span class="icon">👤</span> User management</button>
   </nav>
   <div class="sidebar-user">
     <div class="user-avatar" id="sidebarAvatar">—</div>
@@ -380,6 +400,16 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
       <div class="card"><div class="card-header"><div class="card-title">RM portfolio breakdown</div></div><div class="card-body" id="portfolioTable"></div></div>
     </div>
 
+    <div class="panel" id="panel-users">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">User management</div>
+          <button class="btn btn-primary" onclick="openAddUser()">+ Add user</button>
+        </div>
+        <div class="card-body" id="userListEl"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -415,6 +445,23 @@ body { font-family: var(--font-body); background: var(--bg); color: var(--text);
 
 <div class="toast" id="toast"></div>
 
+<!-- ADD USER MODAL -->
+<div class="modal-overlay" id="addUserModal" onclick="closeAddUserModal(event)">
+  <div class="modal-drawer" style="width:420px;">
+    <div class="modal-header"><div class="modal-title">Add new user</div><button class="modal-close" onclick="closeAddUser()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Full name</label><input type="text" class="form-input" id="auFullName" placeholder="e.g. Tatenda Moyo"></div>
+      <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-input" id="auUsername" placeholder="e.g. tm"></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="auPassword" placeholder="Set a password"></div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select class="form-select" id="auRole"><option value="RM">Relationship Manager</option><option value="Admin">Admin</option><option value="Head">Head of Corporate Banking</option></select>
+      </div>
+      <button class="btn btn-primary" style="width:100%;padding:11px;justify-content:center;" onclick="submitAddUser()">Create user</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://cbz-crm.onrender.com';
 const USERS = {
@@ -426,21 +473,38 @@ const USERS = {
 };
 let currentRM=null, allClients=[], allTasks=[], allAlerts=[];
 
-function doLogin(){
+async function doLogin(){
   const user=document.getElementById('loginUser').value.trim().toLowerCase();
   const pass=document.getElementById('loginPass').value;
   const err=document.getElementById('loginError');
-  if(USERS[user]&&USERS[user].pass===pass){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('sidebar').style.display='flex';
-    document.getElementById('mainContent').style.display='flex';
-    document.getElementById('sidebarName').textContent=USERS[user].name.split(' ')[0];
-    document.getElementById('sidebarAvatar').textContent=USERS[user].name[0];
-    err.style.display='none';
-    initApp();
-  } else {
-    err.style.display='block';
-    document.getElementById('loginPass').value='';
+  try {
+    const res=await fetch(`${API}/api/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})}).then(r=>r.json());
+    if(res.success){
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('sidebar').style.display='flex';
+      document.getElementById('mainContent').style.display='flex';
+      document.getElementById('sidebarName').textContent=res.user.full_name.split(' ')[0];
+      document.getElementById('sidebarAvatar').textContent=res.user.full_name[0];
+      err.style.display='none';
+      initApp();
+    } else {
+      err.style.display='block';
+      document.getElementById('loginPass').value='';
+    }
+  } catch(e) {
+    // fallback to local users if API not available
+    if(USERS[user]&&USERS[user].pass===pass){
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('sidebar').style.display='flex';
+      document.getElementById('mainContent').style.display='flex';
+      document.getElementById('sidebarName').textContent=USERS[user].name.split(' ')[0];
+      document.getElementById('sidebarAvatar').textContent=USERS[user].name[0];
+      err.style.display='none';
+      initApp();
+    } else {
+      err.style.display='block';
+      document.getElementById('loginPass').value='';
+    }
   }
 }
 function doLogout(){
@@ -661,7 +725,7 @@ function showPanel(name,btn){
   if(btn)btn.classList.add('active');
   const titles={dashboard:'Dashboard',clients:'Client portfolio',tasks:'Tasks',alerts:'Alerts',portfolio:'Portfolio view'};
   document.getElementById('topbarTitle').textContent=titles[name]||name;
-  if(name==='portfolio')loadPortfolio();
+  if(name==='portfolio')loadPortfolio(); if(name==='users')loadUsers();
 }
 
 function fmt(n){if(!n&&n!==0)return'—';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(0)+'K';return n.toFixed(0);}
@@ -677,6 +741,57 @@ function updateBadges(tasks,alerts){
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 async function refreshAll(){showToast('Refreshing...');await loadDashboard();await loadClients();await loadTasks();await loadAlerts();}
+
+// ── USER MANAGEMENT ──
+async function loadUsers(){
+  const users = await fetch(`${API}/api/users`).then(r=>r.json()).catch(()=>[]);
+  document.getElementById('userListEl').innerHTML = users.length ? users.map(u=>`
+    <div class="list-row" style="align-items:center;">
+      <div class="client-avatar" style="width:36px;height:36px;font-size:13px;">${u.full_name[0]}</div>
+      <div class="list-main" style="padding-left:12px;">
+        <div class="list-subject">${u.full_name}</div>
+        <div class="list-sub">@${u.username} · ${u.role}</div>
+      </div>
+      <div class="list-right">
+        <span class="badge badge-${u.role==='Admin'?'high':u.role==='Head'?'medium':'open'}">${u.role}</span>
+        <div style="margin-top:4px;font-size:11px;color:var(--muted);">${u.created_at?.split('T')[0]||''}</div>
+        ${u.username!=='admin'?`<button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;margin-top:4px;color:var(--danger);border-color:var(--danger);" onclick="deleteUser(${u.id},'${u.full_name}')">Remove</button>`:''}
+      </div>
+    </div>`).join('') : '<div class="empty">No users found</div>';
+}
+
+function openAddUser(){
+  document.getElementById('addUserModal').classList.add('open');
+}
+function closeAddUserModal(e){if(e.target===document.getElementById('addUserModal'))closeAddUser();}
+function closeAddUser(){document.getElementById('addUserModal').classList.remove('open');}
+
+async function submitAddUser(){
+  const payload={full_name:document.getElementById('auFullName').value,username:document.getElementById('auUsername').value,password:document.getElementById('auPassword').value,role:document.getElementById('auRole').value};
+  if(!payload.full_name||!payload.username||!payload.password){showToast('Please fill in all fields');return;}
+  const res=await fetch(`${API}/api/users`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(r=>r.json());
+  if(res.error){showToast(res.error);return;}
+  closeAddUser();showToast('User created successfully');loadUsers();
+}
+
+async function deleteUser(id,name){
+  if(!confirm(`Remove ${name} from the system?`))return;
+  await fetch(`${API}/api/users/${id}`,{method:'DELETE'});
+  showToast(`${name} removed`);loadUsers();
+}
+
+// ── LOGIN WITH DB ──
+function showCreateUser(){document.getElementById('createUserModal').style.display='flex';}
+function hideCreateUser(){document.getElementById('createUserModal').style.display='none';}
+async function submitCreateUser(){
+  const payload={full_name:document.getElementById('newFullName').value,username:document.getElementById('newUsername').value,password:document.getElementById('newPassword').value};
+  const msg=document.getElementById('createUserMsg');
+  if(!payload.full_name||!payload.username||!payload.password){msg.style.display='block';msg.style.color='var(--danger)';msg.textContent='Please fill in all fields';return;}
+  const res=await fetch(`${API}/api/users`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).then(r=>r.json());
+  if(res.error){msg.style.display='block';msg.style.color='var(--danger)';msg.textContent=res.error;return;}
+  msg.style.display='block';msg.style.color='var(--good)';msg.textContent='Account created! You can now sign in.';
+  setTimeout(hideCreateUser,2000);
+}
 </script>
 </body>
 </html>
